@@ -8,6 +8,12 @@ This app will have a whole MaterialUI theme, an API that can be deployed on AWS 
 ### Frontend
 React typescript bootstrapped with Create React App. I'm ripping a lot of code from [Ed Roh's React Admin Dashboard](https://github.com/ed-roh/react-admin-dashboard/) for the styling, making it work with TypeScript, and building from there.
 
+To install and run:
+```bash
+yarn
+yarn start
+```
+
 ### Backend
 Python Flask app. More later as I expand on this.
 

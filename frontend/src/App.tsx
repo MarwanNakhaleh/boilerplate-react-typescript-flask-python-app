@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Bar from "./pages/Bar";
 import Calendar from "./pages/Calendar";
@@ -8,13 +9,13 @@ import Sidebar from "./layout/Sidebar";
 
 function App() {
   const [theme, colorMode] = useMode();
+  //const [isSidebar, setIsSidebar] = useState(true);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <Sidebar />
           <main className="content">
             <Topbar />
             <Routes>
