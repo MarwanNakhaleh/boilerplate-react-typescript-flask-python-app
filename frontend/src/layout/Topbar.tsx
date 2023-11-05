@@ -7,9 +7,17 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import SearchIcon from "@mui/icons-material/Search";
 
-const Topbar = () => {
+type TopbarProps = {
+    user: any;
+    signIn: any;
+    signOut: any;
+}
+
+const Topbar = ({ user, signIn, signOut }: TopbarProps) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
@@ -48,6 +56,16 @@ const Topbar = () => {
                 <IconButton>
                     <PersonOutlinedIcon />
                 </IconButton>
+                {
+                    user ?
+                        <IconButton onClick={signOut}>
+                            <LogoutIcon />
+                        </IconButton>
+                        :
+                        <IconButton onClick={signIn}>
+                            <LoginIcon />
+                        </IconButton>
+                }
             </Box>
         </Box>
     );

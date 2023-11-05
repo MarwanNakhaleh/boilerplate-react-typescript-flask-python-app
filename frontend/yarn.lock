@@ -3831,19 +3831,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:^20.8.10":
   version: 20.8.10
   resolution: "@types/node@npm:20.8.10"
   dependencies:
     undici-types: ~5.26.4
   checksum: 7c61190e43e8074a1b571e52ff14c880bc67a0447f2fe5ed0e1a023eb8a23d5f815658edb98890f7578afe0f090433c4a635c7c87311762544e20dd78723e515
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^16.7.13":
-  version: 16.18.60
-  resolution: "@types/node@npm:16.18.60"
-  checksum: aa0c81c3f20e663584bf17a5968e54c419277af7982ef41f9d83edd1b7ab4c8af2583a3c8a9e1cf659c6307e6f787e1be20522855121371f5a46d1d54f8a70e3
   languageName: node
   linkType: hard
 
@@ -7678,14 +7671,16 @@ __metadata:
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.5.1
     "@types/jest": ^27.0.1
-    "@types/node": ^16.7.13
+    "@types/node": ^20.8.10
     "@types/react": ^18.0.0
     "@types/react-dom": ^18.0.0
     chart.js: ^3.9.1
     formik: ^2.2.9
+    gapi-script: ^1.2.0
     react: ^18.2.0
     react-chartjs-2: ^4.3.1
     react-dom: ^18.2.0
+    react-google-login: ^5.2.2
     react-pro-sidebar: ^0.7.1
     react-redux: ^8.0.2
     react-router-dom: ^6.3.0
@@ -7793,6 +7788,13 @@ __metadata:
   version: 1.2.3
   resolution: "functions-have-names@npm:1.2.3"
   checksum: c3f1f5ba20f4e962efb71344ce0a40722163e85bee2101ce25f88214e78182d2d2476aa85ef37950c579eb6cf6ee811c17b3101bb84004bb75655f3e33f3fdb5
+  languageName: node
+  linkType: hard
+
+"gapi-script@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "gapi-script@npm:1.2.0"
+  checksum: f61140855e9a4369de15badb2f4568fdd037d949561de5fd86eca379b89423301bc6062748aba6bd1be68a5329f6239ca9c4b6b5fe454ad6046b6b918979d1ba
   languageName: node
   linkType: hard
 
@@ -11888,7 +11890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -12076,6 +12078,19 @@ __metadata:
   version: 2.0.4
   resolution: "react-fast-compare@npm:2.0.4"
   checksum: 06046595f90a4e3e3a56f40a8078c00aa71bdb064ddb98343f577f546aa22e888831fd45f009c93b34707cc842b4c637737e956fd13d6f80607ee92fb9cf9a1c
+  languageName: node
+  linkType: hard
+
+"react-google-login@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "react-google-login@npm:5.2.2"
+  dependencies:
+    "@types/react": "*"
+    prop-types: ^15.6.0
+  peerDependencies:
+    react: ^16 || ^17
+    react-dom: ^16 || ^17
+  checksum: 29199c7035c3c1070a82241dc4063628d693f35a1736d292e3db736e52da825e8a53f9287b0b12b08a50d676973ce1349a4d8243cd849ca25fed6a4284378880
   languageName: node
   linkType: hard
 

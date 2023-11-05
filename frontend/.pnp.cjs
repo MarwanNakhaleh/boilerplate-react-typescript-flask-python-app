@@ -1227,7 +1227,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "@types/node",\
-        "npm:16.18.60"\
+        "npm:20.8.10"\
       ],\
       [\
         "@types/node-forge",\
@@ -2584,6 +2584,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "functions-have-names",\
         "npm:1.2.3"\
+      ],\
+      [\
+        "gapi-script",\
+        "npm:1.2.0"\
       ],\
       [\
         "gensync",\
@@ -4110,6 +4114,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:2.0.4"\
       ],\
       [\
+        "react-google-login",\
+        "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.2.2"\
+      ],\
+      [\
         "react-is",\
         "npm:18.2.0"\
       ],\
@@ -5086,14 +5094,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/react", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:14.0.0"],\
             ["@testing-library/user-event", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:14.5.1"],\
             ["@types/jest", "npm:27.5.2"],\
-            ["@types/node", "npm:16.18.60"],\
+            ["@types/node", "npm:20.8.10"],\
             ["@types/react", "npm:18.2.33"],\
             ["@types/react-dom", "npm:18.2.14"],\
             ["chart.js", "npm:3.9.1"],\
             ["formik", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.4.5"],\
+            ["gapi-script", "npm:1.2.0"],\
             ["react", "npm:18.2.0"],\
             ["react-chartjs-2", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:4.3.1"],\
             ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"],\
+            ["react-google-login", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.2.2"],\
             ["react-pro-sidebar", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:0.7.1"],\
             ["react-redux", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:8.1.3"],\
             ["react-router-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:6.18.0"],\
@@ -11520,13 +11530,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/node", [\
-        ["npm:16.18.60", {\
-          "packageLocation": "./.yarn/cache/@types-node-npm-16.18.60-d8a53d4818-aa0c81c3f2.zip/node_modules/@types/node/",\
-          "packageDependencies": [\
-            ["@types/node", "npm:16.18.60"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:20.8.10", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-20.8.10-29d985f3e4-7c61190e43.zip/node_modules/@types/node/",\
           "packageDependencies": [\
@@ -16400,14 +16403,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/react", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:14.0.0"],\
             ["@testing-library/user-event", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:14.5.1"],\
             ["@types/jest", "npm:27.5.2"],\
-            ["@types/node", "npm:16.18.60"],\
+            ["@types/node", "npm:20.8.10"],\
             ["@types/react", "npm:18.2.33"],\
             ["@types/react-dom", "npm:18.2.14"],\
             ["chart.js", "npm:3.9.1"],\
             ["formik", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.4.5"],\
+            ["gapi-script", "npm:1.2.0"],\
             ["react", "npm:18.2.0"],\
             ["react-chartjs-2", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:4.3.1"],\
             ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"],\
+            ["react-google-login", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.2.2"],\
             ["react-pro-sidebar", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:0.7.1"],\
             ["react-redux", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:8.1.3"],\
             ["react-router-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:6.18.0"],\
@@ -16515,6 +16520,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/functions-have-names-npm-1.2.3-e5cf1e2208-c3f1f5ba20.zip/node_modules/functions-have-names/",\
           "packageDependencies": [\
             ["functions-have-names", "npm:1.2.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["gapi-script", [\
+        ["npm:1.2.0", {\
+          "packageLocation": "./.yarn/cache/gapi-script-npm-1.2.0-974f1c2f4e-f61140855e.zip/node_modules/gapi-script/",\
+          "packageDependencies": [\
+            ["gapi-script", "npm:1.2.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -22152,6 +22166,33 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/react-fast-compare-npm-2.0.4-ab3f6356e2-06046595f9.zip/node_modules/react-fast-compare/",\
           "packageDependencies": [\
             ["react-fast-compare", "npm:2.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["react-google-login", [\
+        ["npm:5.2.2", {\
+          "packageLocation": "./.yarn/cache/react-google-login-npm-5.2.2-b989308685-29199c7035.zip/node_modules/react-google-login/",\
+          "packageDependencies": [\
+            ["react-google-login", "npm:5.2.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.2.2", {\
+          "packageLocation": "./.yarn/__virtual__/react-google-login-virtual-ec8948306a/0/cache/react-google-login-npm-5.2.2-b989308685-29199c7035.zip/node_modules/react-google-login/",\
+          "packageDependencies": [\
+            ["react-google-login", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.2.2"],\
+            ["@types/react", "npm:18.2.33"],\
+            ["@types/react-dom", "npm:18.2.14"],\
+            ["prop-types", "npm:15.8.1"],\
+            ["react", "npm:18.2.0"],\
+            ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
+            "react"\
           ],\
           "linkType": "HARD"\
         }]\
