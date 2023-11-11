@@ -1,0 +1,38 @@
+jobs:
+  include:
+    - language: python
+      python: 3.9
+      before_script:
+        - pip install -r requirements.txt
+        - cd backend/tests
+      script:
+        - python -m unittest discover
+      after_success:
+        - docker build -t your-docker-username/flask-api -f Dockerfile-flask .
+        - docker push your-docker-username/flask-api
+      deploy:
+        provider: script
+        script:
+          - cd ..
+          - bash deploy_to_aws.sh
+        on:
+          branch: main
+    - language: node_js
+      node_js:
+        - "stable"
+      services:
+        - docker
+      before_install:
+        - cd frontend
+        - yarn
+      script:
+        - yarn run build
+      after_success:
+        - docker build -t your-docker-username/react-app .
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker push your-docker-username/react-app
+      deploy:
+        provider: script
+        script: bash deploy_to_aws.sh
+        on:
+          branch: main
