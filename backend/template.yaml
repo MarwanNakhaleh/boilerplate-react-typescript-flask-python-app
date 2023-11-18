@@ -1,6 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: AWS CloudFormation template to deploy a Python Flask app to an ECS Cluster
-
+Parameters:
+  Region:
+    Type: String
+    Default: us-east-1
 Resources:
   # ECS Cluster
   ECSCluster:
@@ -28,7 +31,7 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-group: /ecs/flask-app
-              awslogs-region: [YOUR AWS REGION]
+              awslogs-region: !Ref Region
               awslogs-stream-prefix: ecs
 
   # Task Execution Role

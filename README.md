@@ -10,10 +10,54 @@ React typescript bootstrapped with Create React App. I'm ripping a lot of code f
 
 To install and run:
 ```bash
-yarn
+cd frontend
+yarn # "yarn" by itself defaults to "yarn install"
 yarn start
 ```
 
 ### Backend
-Python Flask app. More later as I expand on this.
+Python Flask app. 
 
+```bash
+cd backend
+python -m venv .
+source bin/activate # different on Windows, I'll fetch that later
+python -m pip install --no-cache-dir -r requirements.txt
+python api.py
+```
+
+## Setup
+### Prerequisites
+You must have the following to execute this full-stack deploy.
+
+* an AWS account along with a programmatic access key configured on your computer
+* AWS CLI V2 installed on your computer
+* Docker Desktop installed on your computer
+
+### Creating an ECR repository
+You can execute the CFT in the root directory "ecr_repository.yaml".
+
+```bash
+aws cloudformation create-stack --stack-name ECRRepository --template-body file://ecr_repository.yaml --parameters ParameterKey=RepositoryName,ParameterValue=REPOSITORY_NAME # replace with an actual repository name
+```
+
+### Pushing your Docker images to the ECR repository
+[AWS resources to push Docker images to ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)
+
+Don't forget to start Docker Desktop before going on!
+
+#### Docker image creation
+```bash
+cd backend
+docker build -t backend-full-stack .
+```
+
+#### Push to ECR
+```bash
+aws ecr get-login-password --region AWS_REGION --profile default | docker login --username AWS --password-stdin AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com
+docker images # verify that the new images we created are in the output, we're gonna refer to them as IMAGE_ID_FOR_BACKEND and IMAGE_ID_FOR_FRONTEND moving forward
+docker tag IMAGE_ID_FOR_BACKEND AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:latest # tag the image for easier tracking
+```
+
+### Modifying Github Actions
+There's an environment section. You will need to modify this, more later.

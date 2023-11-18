@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AWS CloudFormation Template: ECR Repository for full-stack application"
+Parameters:
+  RepositoryName:
+    Type: String
+    Default: full-stack-repository
+Resources:
+  Repository:
+    Type: "AWS::ECR::Repository"
+    Properties:
+      RepositoryName: !Ref RepositoryName
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      ImageTagMutability: MUTABLE
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPushPull
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+              - "ecr:DescribeRepositories"
+              - "ecr:GetRepositoryPolicy"
+              - "ecr:ListImages"
+              - "ecr:DeleteRepository"
+              - "ecr:UpdateRepositoryName"
+              - "ecr:DeleteRepositoryPolicy"
+              - "ecr:SetRepositoryPolicy"
+              - "ecr:BatchDeleteImage"
+              - "ecr:SetImageScanningConfiguration"
+              - "ecr:SetImageTagMutability"
+Outputs:
+  RepositoryUri:
+    Description: "ECR Repository URI"
+    Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}"
