@@ -50,13 +50,18 @@ Don't forget to start Docker Desktop before going on!
 ```bash
 cd backend
 docker build -t backend-full-stack .
+cd ../frontend
+docker build -t frontend-full-stack .
 ```
 
 #### Push to ECR
 ```bash
 aws ecr get-login-password --region AWS_REGION --profile default | docker login --username AWS --password-stdin AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com
 docker images # verify that the new images we created are in the output, we're gonna refer to them as IMAGE_ID_FOR_BACKEND and IMAGE_ID_FOR_FRONTEND moving forward
-docker tag IMAGE_ID_FOR_BACKEND AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:latest # tag the image for easier tracking
+docker tag IMAGE_ID_FOR_BACKEND AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full-stack-backend
+docker tag IMAGE_ID_FOR_FRONTEND AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full-stack-frontend
+docker push AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full-stack-backend
+docker push AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full-stack-frontend
 ```
 
 ### Modifying Github Actions
