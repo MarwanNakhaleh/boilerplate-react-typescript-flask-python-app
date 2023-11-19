@@ -1,42 +1,154 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: "AWS CloudFormation Template: ECR Repository for full-stack application"
+AWSTemplateFormatVersion: 2010-09-09
+Description: ECR Repository for full-stack application
 Parameters:
   RepositoryName:
     Type: String
     Default: full-stack-repository
+  SecurityGroupIngressCidrIp:
+    Type: String
+    Default: 0.0.0.0/0
 Resources:
   Repository:
-    Type: "AWS::ECR::Repository"
+    Type: AWS::ECR::Repository
     Properties:
       RepositoryName: !Ref RepositoryName
       ImageScanningConfiguration:
         ScanOnPush: true
       ImageTagMutability: MUTABLE
       RepositoryPolicyText:
-        Version: "2012-10-17"
+        Version: 2012-10-17
         Statement:
           - Sid: AllowPushPull
             Effect: Allow
             Principal: "*"
             Action:
-              - "ecr:GetDownloadUrlForLayer"
-              - "ecr:BatchGetImage"
-              - "ecr:BatchCheckLayerAvailability"
-              - "ecr:PutImage"
-              - "ecr:InitiateLayerUpload"
-              - "ecr:UploadLayerPart"
-              - "ecr:CompleteLayerUpload"
-              - "ecr:DescribeRepositories"
-              - "ecr:GetRepositoryPolicy"
-              - "ecr:ListImages"
-              - "ecr:DeleteRepository"
-              - "ecr:UpdateRepositoryName"
-              - "ecr:DeleteRepositoryPolicy"
-              - "ecr:SetRepositoryPolicy"
-              - "ecr:BatchDeleteImage"
-              - "ecr:SetImageScanningConfiguration"
-              - "ecr:SetImageTagMutability"
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:BatchCheckLayerAvailability
+              - ecr:PutImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+              - ecr:DescribeRepositories
+              - ecr:GetRepositoryPolicy
+              - ecr:ListImages
+              - ecr:DeleteRepository
+              - ecr:UpdateRepositoryName
+              - ecr:DeleteRepositoryPolicy
+              - ecr:SetRepositoryPolicy
+              - ecr:BatchDeleteImage
+              - ecr:SetImageScanningConfiguration
+              - ecr:SetImageTagMutability
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.1.0.0/16
+      # EnableDnsHostnames: true
+      # EnableDnsSupport: true
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.1.0.0/24
+      VpcId:
+        Ref: VPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: InternetGateway
+      VpcId:
+        Ref: VPC
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+
+  RouteTableSubnetAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref PublicSubnet
+
+  Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: >-
+        Allows incoming traffic on port 80 and 443
+      SecurityGroupEgress:
+        - Description: allows all outgoing traffic.
+          IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 0
+          ToPort: 65535
+      SecurityGroupIngress:
+        - Description: Allows incoming TCP traffic on port 80
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp:
+            Ref: SecurityGroupIngressCidrIp
+        - Description: Allows incoming TCP traffic on port 443
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp:
+            Ref: SecurityGroupIngressCidrIp
+      VpcId:
+        Ref: VPC
+
+  EcrVpcEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub com.amazonaws.${AWS::Region}.ecr.api
+      VpcId: !Ref VPC
+      VpcEndpointType: Interface
+      SubnetIds:
+        - !GetAtt PublicSubnet.SubnetId
+      SecurityGroupIds:
+        - !GetAtt SecurityGroup.GroupId
+      PrivateDnsEnabled: false
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: "*"
+            Resource: "*"
 Outputs:
   RepositoryUri:
-    Description: "ECR Repository URI"
-    Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}"
+    Description: ECR Repository URI
+    Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}
+    Export:
+      Name: FullStackRepositoryUri
+  FullStackVpc:
+    Description: Full stack app VPC ID
+    Value: !Ref VPC
+    Export:
+      Name: FullStackVpcId
+  FullStackPublicSubnet:
+    Description: Full stack app public subnet ID
+    Value: !GetAtt PublicSubnet.SubnetId
+    Export:
+      Name: FullStackPublicSubnetId
+  FullStackSecurityGroup:
+    Description: Full stack app security group ID
+    Value: !GetAtt SecurityGroup.GroupId
+    Export:
+      Name: FullStackSecurityGroupId
