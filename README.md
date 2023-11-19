@@ -49,9 +49,9 @@ Don't forget to start Docker Desktop before going on!
 #### Docker image creation
 ```bash
 cd backend
-docker build -t backend-full-stack .
+docker buildx build --platform linux/amd64 -t full-stack-backend  . 
 cd ../frontend
-docker build -t frontend-full-stack .
+docker buildx build --platform linux/amd64 -t full-stack-frontend  . 
 ```
 
 #### Push to ECR

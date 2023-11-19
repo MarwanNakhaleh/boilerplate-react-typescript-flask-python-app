@@ -9,7 +9,7 @@ Parameters:
     Default: FlaskAppCluster
   DockerImage:
     Type: String
-    Default: 375251325318.dkr.ecr.us-east-1.amazonaws.com/full-stack-repository:full-stack-frontend
+    Default: 375251325318.dkr.ecr.us-east-1.amazonaws.com/full-stack-repository:full-stack-backend
 Resources:
   # ECS Cluster
   ECSCluster:
