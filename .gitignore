@@ -184,3 +184,4 @@ npm-debug.log
 secrets.txt
 sample_idx_listing_data.json
 sample_commands.sh
+.aider*

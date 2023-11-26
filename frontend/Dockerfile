@@ -13,10 +13,8 @@ COPY . .
 RUN CI=true yarn install
 
 # Set the environment variable
+ENV YARN_ENABLE_IMMUTABLE_INSTALLS=false
 ENV API_URL=https://api.branson.solutions
-
-# Start the application
-RUN yarn start
 
 # Expose port 3000
 EXPOSE 3000

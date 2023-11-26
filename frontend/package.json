@@ -15,18 +15,20 @@
     "@mui/material": "^5.10.5",
     "@mui/x-data-grid": "^5.17.2",
     "@nivo/bar": "^0.80.0",
-    "@nivo/core": "^0.79.0",
-    "@nivo/geo": "^0.80.0",
-    "@nivo/line": "^0.79.1",
+    "@nivo/colors": "^0.80.0",
+    "@nivo/core": "^0.80.0",
     "@nivo/pie": "^0.80.0",
+    "@nivo/tooltip": "^0.80.0",
     "@react-oauth/google": "^0.11.1",
     "@reduxjs/toolkit": "^1.8.5",
     "@types/jest": "^27.0.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "chart.js": "^3.9.1",
+    "d3-scale": "^4.0.2",
     "formik": "^2.2.9",
     "gapi-script": "^1.2.0",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^4.3.1",
     "react-dom": "^18.2.0",
@@ -40,8 +42,8 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "webpack serve --mode=development",
+    "build": "webpack --config webpack.config.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -67,6 +69,17 @@
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.5.1",
-    "@types/node": "^20.8.10"
-  }
+    "@types/node": "^20.8.10",
+    "css-loader": "^6.8.1",
+    "dotenv-webpack": "^8.0.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "process": "^0.11.10",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "packageManager": "yarn@4.0.2"
 }
