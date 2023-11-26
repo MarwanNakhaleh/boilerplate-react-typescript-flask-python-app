@@ -54,6 +54,14 @@ Resources:
       VpcId:
         Ref: VPC
 
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.1.1.0/24
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: "us-east-1f"
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
 
@@ -104,6 +112,12 @@ Resources:
           ToPort: 80
           CidrIp:
             Ref: SecurityGroupIngressCidrIp
+        - Description: Allows incoming TCP traffic on port 8000
+          IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp:
+            Ref: SecurityGroupIngressCidrIp
         - Description: Allows incoming TCP traffic on port 443
           IpProtocol: tcp
           FromPort: 443
@@ -147,6 +161,11 @@ Outputs:
     Value: !GetAtt PublicSubnet.SubnetId
     Export:
       Name: FullStackPublicSubnetId
+  FullStackPublicSubnet2:
+    Description: Full stack app public subnet 2 ID
+    Value: !GetAtt PublicSubnet2.SubnetId
+    Export:
+      Name: FullStackPublicSubnet2Id
   FullStackSecurityGroup:
     Description: Full stack app security group ID
     Value: !GetAtt SecurityGroup.GroupId

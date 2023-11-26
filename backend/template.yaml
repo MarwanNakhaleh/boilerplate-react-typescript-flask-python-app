@@ -10,6 +10,8 @@ Parameters:
   DockerImage:
     Type: String
     Default: 375251325318.dkr.ecr.us-east-1.amazonaws.com/full-stack-repository:full-stack-backend
+  CertificateImport:
+    Type: String
 Resources:
   # ECS Cluster
   ECSCluster:
@@ -46,6 +48,7 @@ Resources:
 
   ECSService:
     Type: AWS::ECS::Service
+    DependsOn: Listener
     Properties:
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref ECSTaskDefinition
@@ -58,6 +61,10 @@ Resources:
             - !ImportValue FullStackPublicSubnetId
           SecurityGroups:
             - !ImportValue FullStackSecurityGroupId
+      LoadBalancers:
+        - ContainerName: flask-app
+          ContainerPort: 8000
+          TargetGroupArn: !Ref TargetGroup
 
   # Log group to log container output to Cloudwatch
   LogGroup:
@@ -65,6 +72,36 @@ Resources:
     Properties:
       LogGroupName: /ecs/fullstack/backend
       RetentionInDays: 60
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: FlaskAppLoadBalancer
+      Subnets:
+        - !ImportValue FullStackPublicSubnetId
+        - !ImportValue FullStackPublicSubnet2Id
+      SecurityGroups:
+        - !ImportValue FullStackSecurityGroupId
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8000
+      Protocol: HTTP
+      VpcId: !ImportValue FullStackVpcId
+      TargetType: ip
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 8000
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref CertificateImport
 
   # Task Definition
   ECSTaskDefinition:

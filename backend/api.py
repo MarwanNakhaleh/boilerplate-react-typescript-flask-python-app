@@ -47,5 +47,14 @@ def get_houses():
         }
     ])
 
+@app.route('/', methods=['GET'])
+def get():
+    print("healthcheck")
+    return jsonify(
+        {
+            "status": "UP"
+        }
+    )
+
 if __name__ == '__main__':
     app.run(port=8000, host="0.0.0.0", debug=False)
