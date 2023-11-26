@@ -15,18 +15,11 @@ RUN CI=true yarn install
 # Set the environment variable
 ENV API_URL=https://api.branson.solutions
 
-# Build the application
-RUN yarn build
+# Start the application
+RUN yarn start
 
-# Step 2: Use a smaller base image to run the application
-FROM nginx:alpine
+# Expose port 3000
+EXPOSE 3000
 
-# Copy the build from the previous stage
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY --from=build /app/nginx.conf /etc/nginx/nginx.conf
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx and serve the application
-CMD ["nginx", "-g", "daemon off;"]
+# Start the React app
+CMD ["yarn", "start"]
