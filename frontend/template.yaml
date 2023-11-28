@@ -86,9 +86,17 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Port: 3000
-      Protocol: HTTPS
+      Protocol: HTTP
       VpcId: !ImportValue FullStackVpcId
       TargetType: ip
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /
+      HealthCheckPort: 3000
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 15
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 2
 
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -108,8 +116,8 @@ Resources:
     DependsOn: LogGroup
     Properties:
       Family: react-app
-      Cpu: 256
-      Memory: 512
+      Cpu: 512
+      Memory: 1024
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE

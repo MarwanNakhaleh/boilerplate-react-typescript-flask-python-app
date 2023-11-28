@@ -42,7 +42,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "webpack serve --mode=development",
+    "start": "webpack serve --mode=development --allowed-hosts all",
     "build": "webpack --config webpack.config.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
