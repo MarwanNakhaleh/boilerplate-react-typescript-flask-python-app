@@ -66,3 +66,9 @@ docker push AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full
 
 ### Modifying Github Actions
 There's an environment section. You will need to modify this, more later.
+
+## Stuff I've learned from building this thing
+I had minimal experience with Docker prior to building this application. I kinda wanted to do something that was not AWS Lambda flavor of serverless. I love Lambda, but I need to spread my wings and work with more flexible serverless technologies. Here is a list of important lessons I learned from putting this together, in no particular order:
+
+* ChatGPT is a fucking godsend. I've worked with folks who swear against it with statements like "it's just a smart web crawler" or "anything it can figure I can figure out". While both of those statements are somewhat true, to that mindset I say "it's a tool to solve your problems. Use it and solve problems better and faster than before." 
+* Alpine Linux images with code runtime environments can be finicky for nontrivial projects. I was struggling for a while with a Node 18 Alpine Docker image in my frontend Dockerfile. It was never finishing "yarn build" even when left overnight. However, when I switched that to the Node LTS Docker image, "yarn build" finished rather quickly, and then I could still use an Alpine Nginx Docker image to actually serve the built application files.

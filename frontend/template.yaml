@@ -62,7 +62,7 @@ Resources:
             - !ImportValue FullStackSecurityGroupId
       LoadBalancers:
         - ContainerName: react-app
-          ContainerPort: 3000
+          ContainerPort: 80
           TargetGroupArn: !Ref TargetGroup
 
   # Log group to log container output to Cloudwatch
@@ -85,14 +85,14 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Port: 3000
+      Port: 80
       Protocol: HTTP
       VpcId: !ImportValue FullStackVpcId
       TargetType: ip
       HealthCheckEnabled: true
       HealthCheckIntervalSeconds: 30
       HealthCheckPath: /
-      HealthCheckPort: 3000
+      HealthCheckPort: 80
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 15
       HealthyThresholdCount: 3
@@ -105,10 +105,10 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
-      Port: 3000
-      Protocol: HTTPS
-      Certificates:
-        - CertificateArn: !Ref CertificateImport
+      Port: 80
+      Protocol: HTTP
+      # Certificates:
+      #   - CertificateArn: !Ref CertificateImport
 
   # Task Definition
   ECSTaskDefinition:
@@ -116,8 +116,8 @@ Resources:
     DependsOn: LogGroup
     Properties:
       Family: react-app
-      Cpu: 512
-      Memory: 1024
+      Cpu: 256
+      Memory: 512
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
@@ -126,7 +126,7 @@ Resources:
         - Name: react-app
           Image: !Ref DockerImage
           PortMappings:
-            - ContainerPort: 3000
+            - ContainerPort: 80
           LogConfiguration:
             LogDriver: awslogs
             Options:

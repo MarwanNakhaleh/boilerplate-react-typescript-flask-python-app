@@ -1,5 +1,5 @@
 # Step 1: Use a Node.js base image
-FROM --platform=linux/amd64 node:18-alpine as build
+FROM --platform=linux/amd64 node:lts as build
 
 # Set the working directory in the Docker container
 WORKDIR /app
@@ -7,17 +7,27 @@ WORKDIR /app
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
 # Copy the rest of your app's source code into the container
-COPY . .
+COPY package.json yarn.lock ./
 
 # Install dependencies in the container
 RUN CI=true yarn install
+
+COPY . ./
 
 # Set the environment variable
 ENV YARN_ENABLE_IMMUTABLE_INSTALLS=false
 ENV API_URL=https://api.branson.solutions
 
-# Expose port 3000
-EXPOSE 3000
+RUN yarn build
 
-# Start the React app
-CMD ["yarn", "start"]
+# Stage 2: Set up Nginx to serve the app
+FROM --platform=linux/amd64 nginx:alpine
+
+# Copy the build output to replace the default nginx contents.
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Expose port 80 to the outside once the container has launched
+EXPOSE 80
+
+# Start Nginx and keep it running
+CMD ["nginx", "-g", "daemon off;"]
