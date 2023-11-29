@@ -105,10 +105,10 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
-      # Certificates:
-      #   - CertificateArn: !Ref CertificateImport
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref CertificateImport
 
   # Task Definition
   ECSTaskDefinition:
