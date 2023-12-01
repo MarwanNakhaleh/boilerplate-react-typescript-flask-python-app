@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
-import requests
 import uuid
+
+import requests
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 MLS_API_URL = "https://mockmlsapi.com/houses"  # this is a placeholder URL
@@ -57,4 +58,4 @@ def get():
     )
 
 if __name__ == '__main__':
-    app.run(port=8000, host="0.0.0.0", debug=False)
+    app.run(port=8000, host="0.0.0.0", debug=True)
