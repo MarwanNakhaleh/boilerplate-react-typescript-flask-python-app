@@ -12,31 +12,30 @@ listings = Blueprint('listings', __name__)
 @cross_origin(headers=['Content-Type'])
 def get_listings():
     args = {}
-    for key in args_dict:
-        args[key] = request.args.get(key)
+    try:
+        for key in args_dict:
+            args[key] = request.args.get(key)
 
-    results = json_response(args, "/listings", [
-        {
-            "city": "Austin",
-            "state": "TX",
-            "bedrooms": 3,
-            "bathrooms": 2,
-            "square_feet": 2000
+        results = json_response(args, "/listings", [
+            {
+                "city": "Austin",
+                "state": "TX",
+                "bedrooms": 3,
+                "bathrooms": 2,
+                "square_feet": 2000
+            }
+        ])
+        resp = api_response(results, args["start"], args["limit"])
+    except Exception as e:
+        print(e)
+        results = {
+            "error": "invalid arguments entered"
         }
-    ])
-    resp = api_response(results, args["start"], args["limit"])
-    # except Exception as e:
-    #     print(e)
-    #     results = {
-    #         "error": "invalid arguments entered"
-    #     }
-    #     resp = api_response(results, None, None, 400)
-    print(results)
+        resp = api_response(results, None, None, 400)
     return resp
 
 @listings.route('/', methods=["GET"])
 def get():
-    print("healthcheck")
     return jsonify(
         {
             "status": "UP"
@@ -44,13 +43,11 @@ def get():
     )
 
 def api_response(payload, start=None, limit=None, status=200):
-    print("in api_response")
     if start and limit:
         payload = get_paginated_list(payload, '/listings', start, limit)
     return (payload, status, {'content-type': 'application/json'})
 
 def json_response(args: str, path: str, data: list):
-    print("in json_response")
     payload =  {
         "metadata": {
             "path": path,
@@ -59,7 +56,6 @@ def json_response(args: str, path: str, data: list):
         "num_results": len(data),
         "results": data
     }
-    print(json.dumps(payload))
     return jsonify(payload)
 
 
