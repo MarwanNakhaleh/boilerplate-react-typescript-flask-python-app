@@ -36,10 +36,10 @@ You must have the following to execute this full-stack deploy.
 * Docker Desktop installed on your computer
 
 ### Creating an ECR repository
-You can execute the CFT in the root directory "ecr_repository.yaml".
+You can execute the CFT in the root directory "ecr_repository_and_network_resources.yaml".
 
 ```bash
-aws cloudformation create-stack --stack-name ECRRepository --template-body file://ecr_repository.yaml --parameters ParameterKey=RepositoryName,ParameterValue=REPOSITORY_NAME # replace with an actual repository name
+aws cloudformation create-stack --stack-name ECRRepository --template-body file://ecr_repository_and_network_resources.yaml --parameters ParameterKey=RepositoryName,ParameterValue=REPOSITORY_NAME # replace with an actual repository name
 ```
 
 ### Pushing your Docker images to the ECR repository
@@ -66,7 +66,7 @@ docker push AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full
 ```
 
 ### Setting up HTTPS
-You need an existing domain name. I had to create an A record pointing from a subdomain of my URL I've been using (in this case https://branson.solutions) called `boilerplate.branson.solutions`. I also had to issue a certificate in ACM covering *.branson.solutions and then update the CFT to use that certificate, since my old certificate was only valid on branson.solutions, not *.branson.solutions.
+You need an existing domain name. I had to create an A record pointing from a subdomain of my URL I've been using (in this case https://branson.solutions) called `boilerplate.branson.solutions`. I also had to issue a certificate in [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) covering `*.branson.solutions` and then update the CFT to use that certificate, since my old certificate was only valid on `branson.solutions`, not `*.branson.solutions`.
 
 ### Modifying Github Actions
 There's an environment section. You will need to modify this. I'll write more about this when I actually get around to fleshing out this step.
