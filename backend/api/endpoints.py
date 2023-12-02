@@ -1,10 +1,8 @@
-import json
-
 from flask import jsonify, request
 from flask.blueprints import Blueprint
 from flask_cors import cross_origin
 
-from constants import args_dict
+from .constants import args_list
 
 listings = Blueprint('listings', __name__)
 
@@ -13,7 +11,7 @@ listings = Blueprint('listings', __name__)
 def get_listings():
     args = {}
     try:
-        for key in args_dict:
+        for key in args_list:
             args[key] = request.args.get(key)
 
         results = json_response(args, "/listings", [

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from endpoints import listings
+from api.endpoints import listings
 
 def create_app():
     app = Flask(__name__)

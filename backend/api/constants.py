@@ -1,15 +1,17 @@
-from pydoc import locate
+import os
+import sys
+sys.path.insert(0, os.getcwd())
 
-args_dict = {
-    "min_bedrooms": locate("int"),
-    "max_bedrooms": locate("int"),
-    "min_bathrooms": locate("int"),
-    "max_bathrooms": locate("int"),
-    "min_price": locate("float"),
-    "max_price": locate("float"),
-    "start": locate("int"),
-    "limit": locate("int"),
-    "city": locate("str"),
-    "state": locate("str"),
-    "is_test": locate("str")
-}
+args_list = [
+    "min_bedrooms",
+    "max_bedrooms",
+    "min_bathrooms",
+    "max_bathrooms",
+    "min_price",
+    "max_price",
+    "start",
+    "limit",
+    "city",
+    "state",
+    "is_test"
+]

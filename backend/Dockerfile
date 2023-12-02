@@ -12,7 +12,7 @@ EXPOSE 8000
 # Install any dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY api.py .
+COPY . .
 
 # Specify the command to run on container start
-CMD [ "python", "./api.py"]
+CMD [ "python", "./app.py"]
