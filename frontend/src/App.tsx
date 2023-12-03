@@ -43,7 +43,7 @@ function App() {
                 path="/"
                 element={user ? <Navigate to="/bar" /> : <Unauthenticated />}
               />
-              <Route path="/bar" element={<Bar user={user} />} />
+              <Route path="/bar" element={user ? <Bar /> : <Unauthenticated />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/contacts" element={<Contacts />} />
             </Routes>

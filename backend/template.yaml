@@ -62,7 +62,7 @@ Resources:
             - !ImportValue FullStackSecurityGroupId
       LoadBalancers:
         - ContainerName: flask-app
-          ContainerPort: 80
+          ContainerPort: 8000
           TargetGroupArn: !Ref TargetGroup
 
   # Log group to log container output to Cloudwatch
@@ -85,14 +85,14 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Port: 80
+      Port: 8000
       Protocol: HTTP
       VpcId: !ImportValue FullStackVpcId
       TargetType: ip
       HealthCheckEnabled: true
       HealthCheckIntervalSeconds: 30
       HealthCheckPath: /
-      HealthCheckPort: 80
+      HealthCheckPort: 8000
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 15
       HealthyThresholdCount: 3
@@ -126,7 +126,7 @@ Resources:
         - Name: flask-app
           Image: !Ref DockerImage
           PortMappings:
-            - ContainerPort: 80
+            - ContainerPort: 8000
           LogConfiguration:
             LogDriver: awslogs
             Options:
