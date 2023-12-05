@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script'
 
-
 const UnauthenticatedPage: React.FC = () => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID as string;
 

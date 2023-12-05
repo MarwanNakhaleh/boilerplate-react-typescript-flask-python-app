@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Bar from "./pages/Bar";
 import Calendar from "./pages/Calendar";
@@ -16,6 +16,10 @@ function App() {
   const [user, setUser] = useState<GoogleLoginResponse | GoogleLoginResponseOffline | null>(null);
 
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID as string;
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const { signIn } = useGoogleLogin({
     onSuccess: (response) => {
@@ -40,10 +44,7 @@ function App() {
           <main className="content">
             <Topbar user={user} signIn={signIn} signOut={signOut} />
             <Routes>
-              <Route
-                path="/"
-                element={user ? <Navigate to="/dashboard" /> : <Unauthenticated />}
-              />
+              <Route path="/" element={user ? <></> : <Unauthenticated />} />
               <Route path="/bar" element={user ? <Bar /> : <Unauthenticated />} />
               <Route path="/calendar" element={user ? <Calendar /> : <Unauthenticated />} />
               <Route path="/contacts" element={user ? <Contacts /> : <Unauthenticated />} />
