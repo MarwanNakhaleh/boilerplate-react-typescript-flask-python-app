@@ -9,6 +9,7 @@ import Topbar from "./layout/Topbar";
 import Unauthenticated from './pages/Unauthenticated';
 
 import { GoogleLoginResponse, GoogleLoginResponseOffline, useGoogleLogin } from 'react-google-login';
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -41,11 +42,12 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={user ? <Navigate to="/bar" /> : <Unauthenticated />}
+                element={user ? <Navigate to="/dashboard" /> : <Unauthenticated />}
               />
               <Route path="/bar" element={user ? <Bar /> : <Unauthenticated />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/contacts" element={<Contacts />} />
+              <Route path="/calendar" element={user ? <Calendar /> : <Unauthenticated />} />
+              <Route path="/contacts" element={user ? <Contacts /> : <Unauthenticated />} />
+              <Route path="/dashboard" element={user ? <Dashboard /> : <Unauthenticated />} />
             </Routes>
           </main>
         </div>

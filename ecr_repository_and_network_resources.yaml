@@ -106,14 +106,13 @@ Resources:
           FromPort: 0
           ToPort: 65535
       SecurityGroupIngress:
-        # remove this after successful HTTPS testing of backend
+        # TODO: restrict to 443 only while preserving health checks somehow, or figure out best practices around this
         - Description: Allows incoming TCP traffic on port 80
           IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp:
             Ref: SecurityGroupIngressCidrIp
-        # remove this after successful HTTPS testing of backend
         - Description: Allows incoming TCP traffic on port 8000
           IpProtocol: tcp
           FromPort: 8000

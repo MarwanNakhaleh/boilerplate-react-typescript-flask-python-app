@@ -5,9 +5,9 @@ import ProgressCircle from "./ProgressCircle";
 type StatBoxProps = {
     title: string,
     subtitle: string,
-    icon: string,
+    icon: any,
     progress: number,
-    increase: number
+    increase: string
 }
 
 const StatBox = ({ title, subtitle, icon, progress, increase }: StatBoxProps) => {
