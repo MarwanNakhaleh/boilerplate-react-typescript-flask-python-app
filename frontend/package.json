@@ -11,9 +11,10 @@
     "@fullcalendar/list": "^5.11.3",
     "@fullcalendar/react": "^5.11.2",
     "@fullcalendar/timegrid": "^5.11.3",
-    "@mui/icons-material": "^5.10.3",
-    "@mui/material": "^5.10.5",
-    "@mui/x-data-grid": "^5.17.2",
+    "@mui/icons-material": "^5.14.19",
+    "@mui/material": "^5.14.20",
+    "@mui/system": "^5.14.20",
+    "@mui/x-data-grid": "^6.18.3",
     "@nivo/bar": "^0.80.0",
     "@nivo/colors": "^0.80.0",
     "@nivo/core": "^0.80.0",
@@ -28,7 +29,7 @@
     "@types/react-dom": "^18.0.0",
     "chart.js": "^3.9.1",
     "d3-scale": "^4.0.2",
-    "formik": "^2.2.9",
+    "formik": "^2.4.5",
     "gapi-script": "^1.2.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -41,7 +42,7 @@
     "react-scripts": "5.0.1",
     "typescript": "4.7",
     "web-vitals": "^2.1.0",
-    "yup": "^0.32.11"
+    "yup": "^1.3.2"
   },
   "scripts": {
     "start": "webpack serve --mode=development --allowed-hosts all",

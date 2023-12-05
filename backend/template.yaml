@@ -7,6 +7,9 @@ Parameters:
   ClusterName:
     Type: String
     Default: FlaskAppCluster
+  ApiDeployStageName:
+    Type: String
+    Default: live
   DockerImage:
     Type: String
   CertificateImport:
@@ -72,6 +75,13 @@ Resources:
       LogGroupName: /ecs/fullstack/backend
       RetentionInDays: 60
 
+  # Log group to log API Gateway output to Cloudwatch
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /ecs/fullstack/backend/apigateway
+      RetentionInDays: 60
+
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -133,3 +143,78 @@ Resources:
               awslogs-group: /ecs/fullstack/backend
               awslogs-region: !Ref Region
               awslogs-stream-prefix: ecs
+
+  # keeping HTTPS API behind API Gateway
+  VpcLink:
+    Type: AWS::ApiGatewayV2::VpcLink
+    Properties:
+      Name: BackendApiVpcLink
+      SecurityGroupIds:
+        - !ImportValue FullStackSecurityGroupId
+      SubnetIds:
+        - !ImportValue FullStackPublicSubnetId
+        - !ImportValue FullStackPublicSubnet2Id
+
+  # API Gateway
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: ECS API access
+      Description: API Gateway to reach the ECS cluster running the API
+      ProtocolType: HTTP
+      # Target: arn:aws:apigateway:{region}:lambda:path/2015-03-31/functions/arn:aws:lambda:{region}:{account-id}:function:{function-name}/invocations
+
+  ListenerApiIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      Description: Integration with ALB
+      IntegrationType: HTTP_PROXY
+      IntegrationUri: !GetAtt Listener.ListenerArn
+      IntegrationMethod: ANY
+      TimeoutInMillis: 15000
+      ConnectionType: VPC_LINK
+      ConnectionId: !Ref VpcLink
+      PayloadFormatVersion: 1.0
+
+  ApiListingsRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: $default
+      AuthorizationType: NONE # need an authorizer on this
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref ListenerApiIntegration
+
+  LiveStage:
+    Type: "AWS::ApiGatewayV2::Stage"
+    Properties:
+      StageName: !Ref ApiDeployStageName
+      Description: Live Stage
+      AutoDeploy: true
+      ApiId: !Ref HttpApi
+      DefaultRouteSettings:
+        DetailedMetricsEnabled: true
+        # LoggingLevel: INFO
+        DataTraceEnabled: false
+        ThrottlingBurstLimit: 10
+        ThrottlingRateLimit: 10
+      AccessLogSettings:
+        DestinationArn: !GetAtt ApiLogGroup.Arn
+        Format: >-
+          {"requestId":"$context.requestId", "ip": "$context.identity.sourceIp",
+          "caller":"$context.identity.caller", "errorMessage":"$context.error.messageString","error":"$context.error.message",
+          "user":"$context.identity.user","requestTime":"$context.requestTime","routeKey":"$context.routeKey",
+          "status":"$context.status"}
+
+  ApiDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - LiveStage
+      - ApiListingsRoute
+    Properties:
+      Description: deployment of courses endpoints
+      ApiId: !Ref HttpApi
+      StageName: !Ref ApiDeployStageName

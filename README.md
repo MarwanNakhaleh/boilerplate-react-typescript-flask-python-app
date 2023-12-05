@@ -2,7 +2,11 @@
 I want to have boilerplate applications ready to build upon and deploy very quickly for whatever hare-brained idea I get, so this application will do that.
 
 ## Features
-This app will have a whole Material UI theme, an API that can be deployed on AWS easily, and more. Really, in its finished state, it should just need to be adapted to whatever use case for whatever app I want to build in the future.
+### Frontend
+* TBD
+
+### Backend
+* TBD
 
 ## Technical details
 ### Frontend local setup
@@ -35,11 +39,13 @@ You must have the following to execute this full-stack deploy.
 * AWS CLI V2 installed on your computer
 * Docker Desktop installed on your computer
 
+This app also utilizes Google Authentication, so you will need a Google Cloud account with a valid credit card on your billing account. I'll describe that setup in more detail later.
+
 ### Creating an ECR repository
 You can execute the CFT in the root directory "ecr_repository_and_network_resources.yaml".
 
 ```bash
-aws cloudformation create-stack --stack-name ECRRepository --template-body file://ecr_repository_and_network_resources.yaml --parameters ParameterKey=RepositoryName,ParameterValue=REPOSITORY_NAME # replace with an actual repository name
+aws cloudformation create-stack --stack-name ECRRepository --template-body file://ecr_repository_and_network_resources.yaml --tags '[{"Key": "Author", "Value": "YOUR_NAME"}, {"Key": "Project", "Value": "Boilerplate Full-Stack App"}]' --parameters ParameterKey=RepositoryName,ParameterValue=REPOSITORY_NAME # replace with an actual repository name 
 ```
 
 ### Pushing your Docker images to the ECR repository

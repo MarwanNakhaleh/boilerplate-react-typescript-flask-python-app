@@ -10,6 +10,8 @@ import Unauthenticated from './pages/Unauthenticated';
 
 import { GoogleLoginResponse, GoogleLoginResponseOffline, useGoogleLogin } from 'react-google-login';
 import Dashboard from "./pages/Dashboard";
+import Form from "./pages/Form";
+import Team from "./pages/Team";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -55,6 +57,8 @@ function App() {
               <Route path="/calendar" element={user ? <Calendar /> : <Unauthenticated />} />
               <Route path="/contacts" element={user ? <Contacts /> : <Unauthenticated />} />
               <Route path="/dashboard" element={user ? <Dashboard /> : <Unauthenticated />} />
+              <Route path="/form" element={user ? <Form /> : <Unauthenticated />} />
+              <Route path="/team" element={user ? <Team /> : <Unauthenticated />} />
             </Routes>
           </main>
         </div>

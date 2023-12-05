@@ -1,5 +1,5 @@
 export enum AccessType {
-    ADMIN,
-    MANAGER,
-    USER
+    ADMIN = "Admin",
+    MANAGER = "Manager",
+    USER = "User"
 }
