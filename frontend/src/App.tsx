@@ -18,22 +18,28 @@ function App() {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID as string;
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const { signIn } = useGoogleLogin({
-    onSuccess: (response) => {
-      setUser(response as GoogleLoginResponse);
+    onSuccess: (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+      localStorage.setItem('user', JSON.stringify(response));
+      setUser(response);
     },
     clientId: clientId, // Replace with your Google client ID
     isSignedIn: true,
-    onFailure: (error) => {
+    onFailure: (error: any) => {
       console.error(error);
     },
   });
 
   const signOut = () => {
+    localStorage.removeItem('user');
     setUser(null);
+    window.location.href = '/'; // or use React Router's useNavigate
   };
 
   return (
@@ -44,7 +50,7 @@ function App() {
           <main className="content">
             <Topbar user={user} signIn={signIn} signOut={signOut} />
             <Routes>
-              <Route path="/" element={user ? <></> : <Unauthenticated />} />
+              <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Unauthenticated />} />
               <Route path="/bar" element={user ? <Bar /> : <Unauthenticated />} />
               <Route path="/calendar" element={user ? <Calendar /> : <Unauthenticated />} />
               <Route path="/contacts" element={user ? <Contacts /> : <Unauthenticated />} />

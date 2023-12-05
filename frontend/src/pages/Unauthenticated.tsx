@@ -18,6 +18,8 @@ const UnauthenticatedPage: React.FC = () => {
 
     const onSuccess = (response: any) => {
         console.log('SUCCESS', response);
+        localStorage.setItem('user', JSON.stringify(response));
+        window.location.href = '/dashboard'; // or use React Router's useNavigate
     };
     const onFailure = (response: any) => {
         console.log('FAILED', response);
