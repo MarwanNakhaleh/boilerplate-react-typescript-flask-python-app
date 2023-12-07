@@ -1,13 +1,24 @@
+import { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar, GridColDef } from "@mui/x-data-grid";
-import { tokens } from "../theme";
-import { mockDataContacts } from "../data/mockData";
-import Header from "../components/Header";
 import { useTheme } from "@mui/material";
+
+import { tokens } from "../theme";
+import Header from "../components/Header";
+import { Contact } from "../types/Contact";
+import { sendRequest } from "../helpers/request";
 
 const Contacts = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [contacts, setContacts] = useState<Contact[]>([]);
+
+    useEffect(() => {
+        sendRequest(`${process.env.API_URL}/api/v1/contacts`, {
+            method: "GET",
+        })
+            .then((data) => setContacts(data.results as Contact[]))
+    }, []);
 
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", flex: 0.5 },
@@ -91,7 +102,7 @@ const Contacts = () => {
                 }}
             >
                 <DataGrid
-                    rows={mockDataContacts}
+                    rows={contacts}
                     columns={columns}
                     components={{ Toolbar: GridToolbar }}
                 />

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
+
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { tokens } from "../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { Email } from "@mui/icons-material";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
+
+import { tokens } from "../theme";
 import Header from "../components/Header";
 import LineChart from "../components/LineChart";
 import GeographyChart from "../components/GeographyChart";
@@ -14,7 +16,6 @@ import StatBox from "../components/StatBox";
 import ProgressCircle from "../components/ProgressCircle";
 import { sendRequest } from "../helpers/request";
 import { Transaction } from "../types/Transaction";
-import { ApiResponse } from "../types/ApiResponse";
 
 const Dashboard = () => {
     const theme = useTheme();
