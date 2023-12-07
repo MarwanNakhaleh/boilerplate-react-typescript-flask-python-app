@@ -1,6 +1,6 @@
+import { useState, useEffect } from "react";
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../theme";
-import { mockTransactions } from "../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { Email } from "@mui/icons-material";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -12,10 +12,21 @@ import GeographyChart from "../components/GeographyChart";
 import BarChart from "../components/BarChart";
 import StatBox from "../components/StatBox";
 import ProgressCircle from "../components/ProgressCircle";
+import { sendRequest } from "../helpers/request";
+import { Transaction } from "../types/Transaction";
+import { ApiResponse } from "../types/ApiResponse";
 
 const Dashboard = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+    useEffect(() => {
+        sendRequest(`${process.env.API_URL}/api/v1/transactions`, {
+            method: "GET",
+        })
+            .then((data) => setTransactions(data.results as Transaction[]))
+    }, []);
 
     return (
         <Box m="20px">
@@ -182,7 +193,7 @@ const Dashboard = () => {
                             Recent Transactions
                         </Typography>
                     </Box>
-                    {mockTransactions.map((transaction, i) => (
+                    {transactions.map((transaction, i) => (
                         <Box
                             key={`${transaction.txId}-${i}`}
                             display="flex"

@@ -1,20 +1,64 @@
+import json
+
 from flask import jsonify, request
 from flask.blueprints import Blueprint
 from flask_cors import cross_origin
 
-from .constants import args_list
+from .constants import listings_args_list, contacts_args_list, listings_endpoint, contacts_endpoint, transactions_args_list, transactions_endpoint
+from .data import get_data
 
 listings = Blueprint('listings', __name__)
+contacts = Blueprint('contacts', __name__)
+transactions = Blueprint('transactions', __name__)
 
-@listings.route('/listings', methods=["GET"])
+@contacts.route(contacts_endpoint, methods=["GET"])
+@cross_origin(headers=['Content-Type'])
+def get_contacts():
+    args = {}
+    try:
+        for key in contacts_args_list:
+            args[key] = request.args.get(key)
+
+        contacts = get_data("api/mockdata/contacts.json")
+        results = json_response(args, contacts_endpoint, contacts)
+        resp = api_response(results, contacts_endpoint, args["start"], args["limit"])
+    except Exception as e:
+        print(e)
+        results = {
+            "error": "invalid arguments entered"
+        }
+        resp = api_response(results, contacts_endpoint, None, None, 400)
+    return resp
+
+@transactions.route(transactions_endpoint, methods=["GET"])
+@cross_origin(headers=['Content-Type'])
+def get_transactions():
+    args = {}
+    try:
+        for key in transactions_args_list:
+            args[key] = request.args.get(key)
+
+        transactions = get_data("api/mockdata/transactions.json")
+        results = json_response(args, transactions_endpoint, transactions)
+        resp = api_response(results, transactions_endpoint, args["start"], args["limit"])
+    except Exception as e:
+        print(e)
+        results = {
+            "error": "invalid arguments entered"
+        }
+        resp = api_response(results, transactions_endpoint, None, None, 400)
+    return resp
+
+@listings.route(listings_endpoint, methods=["GET"])
 @cross_origin(headers=['Content-Type'])
 def get_listings():
     args = {}
     try:
-        for key in args_list:
+        for key in listings_args_list:
             args[key] = request.args.get(key)
 
-        results = json_response(args, "/listings", [
+
+        results = json_response(args, listings_endpoint, [
             {
                 "city": "Austin",
                 "state": "TX",
@@ -23,13 +67,13 @@ def get_listings():
                 "square_feet": 2000
             }
         ])
-        resp = api_response(results, args["start"], args["limit"])
+        resp = api_response(results, listings_endpoint, args["start"], args["limit"])
     except Exception as e:
         print(e)
         results = {
             "error": "invalid arguments entered"
         }
-        resp = api_response(results, None, None, 400)
+        resp = api_response(results, listings_endpoint, None, None, 400)
     return resp
 
 @listings.route('/', methods=["GET"])
@@ -40,9 +84,9 @@ def get():
         }
     )
 
-def api_response(payload, start=None, limit=None, status=200):
+def api_response(payload, endpoint, start=None, limit=None, status=200):
     if start and limit:
-        payload = get_paginated_list(payload, '/listings', start, limit)
+        payload = get_paginated_list(payload, endpoint, start, limit)
     return (payload, status, {'content-type': 'application/json'})
 
 def json_response(args: str, path: str, data: list):

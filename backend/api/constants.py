@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.insert(0, os.getcwd())
 
-args_list = [
+listings_args_list = [
     "min_bedrooms",
     "max_bedrooms",
     "min_bathrooms",
@@ -15,3 +15,17 @@ args_list = [
     "state",
     "is_test"
 ]
+
+contacts_args_list = [
+    "start",
+    "limit",
+]
+
+transactions_args_list = [
+    "start",
+    "limit",
+]
+
+listings_endpoint = "/listings"
+contacts_endpoint = "/contacts"
+transactions_endpoint = "/transactions"

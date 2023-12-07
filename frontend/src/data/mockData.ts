@@ -151,7 +151,7 @@ export const mockDataContacts = [
     age: 44,
     phone: "(543)124-0123",
     address: "22215 Super Street, Everting, ZO 515234",
-    city: "Evertin",
+    city: "Everting",
     zipCode: "51523",
     registrarId: 123512,
   },
