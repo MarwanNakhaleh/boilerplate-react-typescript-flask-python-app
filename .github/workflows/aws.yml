@@ -44,11 +44,23 @@ jobs:
 
           if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
             echo "Stack exists, updating..."
-            aws cloudformation update-stack \
+            set +e  # Disable exit on error
+            UPDATE_OUTPUT=$(aws cloudformation update-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
               --tags "$TAGS" \
-              --parameters $PARAMETERS
+              --parameters $PARAMETERS 2>&1)
+            STATUS=$?
+            set -e  # Re-enable exit on error
+
+            if [ $STATUS -ne 0 ]; then
+              echo "$UPDATE_OUTPUT"
+              if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
+                echo "No updates are to be performed. Continuing..."
+              else
+                exit $STATUS
+              fi
+            fi
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
