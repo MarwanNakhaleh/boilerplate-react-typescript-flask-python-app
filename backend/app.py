@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from api.constants import api_prefix
+from api.constants import api_prefix, origins
 
 from api.endpoints import (
     listings, 
@@ -16,7 +16,7 @@ def create_app():
     app = Flask(__name__)
     app.config['DEBUG'] = True
     app.config['CORS_HEADERS'] = 'Content-Type'
-    cors = CORS(app, resources={r"/*": {"origins": ["localhost", "http://localhost:3000"]}})
+    cors = CORS(app, resources={r"/*": {"origins": origins}})
     app.register_blueprint(listings, url_prefix=api_prefix)
     app.register_blueprint(contacts, url_prefix=api_prefix)
     app.register_blueprint(transactions, url_prefix=api_prefix)

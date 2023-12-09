@@ -4,6 +4,12 @@ sys.path.insert(0, os.getcwd())
 
 api_prefix = '/api/v1'
 
+origins = [
+    "localhost", 
+    "http://localhost:3000",
+    "http://localhost:9002",
+]
+
 listings_args_list = [
     "min_bedrooms",
     "max_bedrooms",
