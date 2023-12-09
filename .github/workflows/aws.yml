@@ -37,7 +37,8 @@ jobs:
         run: |
           STACK_NAME=ECRRepository
           TEMPLATE_BODY=file://ecr_repository_and_network_resources.yaml
-          TAGS='[{"Key": "Author", "Value": "${{ env.AUTHOR_NAME }}"}, {"Key": "Project", "Value": "Boilerplate Full-Stack App"}]'
+          TAGS="[{\"Key\": \"Author\", \"Value\": \"${{ env.AUTHOR_NAME }}\"}, {\"Key\": \"Project\", \"Value\": \"Boilerplate Full-Stack App\"}]"
+
 
           PARAMETERS='ParameterKey=RepositoryName,ParameterValue=full-stack-repository'
 
@@ -46,14 +47,14 @@ jobs:
             aws cloudformation update-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
-              --tags $TAGS \
+              --tags "$TAGS" \
               --parameters $PARAMETERS
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
-              --tags $TAGS \
+              --tags "$TAGS" \
               --parameters $PARAMETERS
           fi
 
