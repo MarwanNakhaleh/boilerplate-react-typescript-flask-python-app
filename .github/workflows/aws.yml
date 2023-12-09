@@ -60,6 +60,7 @@ jobs:
                 exit $STATUS
               fi
             fi
+            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
@@ -67,6 +68,7 @@ jobs:
               --template-body $TEMPLATE_BODY \
               --tags "$TAGS" \
               --parameters $PARAMETERS
+            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
           fi
 
       - name: Login to Amazon ECR
@@ -84,9 +86,23 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$BACKEND_IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$BACKEND_IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Create ACM certificate
+      - name: Create or Find ACM certificate
         id: create-acm-certificate
         run: |
+          CERTIFICATE_DOMAIN_NAME="$CERTIFICATE_DOMAIN_NAME"
+          CERTIFICATES=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='$CERTIFICATE_DOMAIN_NAME'].CertificateArn" --output text)
+
+          for CERTIFICATE_ARN in $CERTIFICATES; do
+            CERTIFICATE_DETAILS=$(aws acm describe-certificate --certificate-arn $CERTIFICATE_ARN --query 'Certificate')
+            CERTIFICATE_STATUS=$(echo $CERTIFICATE_DETAILS | jq -r '.Status')
+            if [ "$CERTIFICATE_STATUS" == "ISSUED" ]; then
+              echo "Valid certificate found: $CERTIFICATE_ARN"
+              echo "certificate_arn=$CERTIFICATE_ARN" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          done
+
+          echo "No valid certificate found. Requesting new certificate."
           CERTIFICATE_ARN=$(aws acm request-certificate --domain-name "$CERTIFICATE_DOMAIN_NAME" --validation-method DNS --query 'CertificateArn' --output text)
           echo "certificate_arn=$CERTIFICATE_ARN" >> $GITHUB_OUTPUT
 
@@ -99,12 +115,25 @@ jobs:
 
           if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
             echo "Stack exists, updating..."
-            aws cloudformation update-stack \
+            set +e  # Disable exit on error
+            UPDATE_OUTPUT=$(aws cloudformation update-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
               --tags "$TAGS" \
               --parameters $PARAMETERS \
-              --capabilities CAPABILITY_NAMED_IAM
+              --capabilities CAPABILITY_NAMED_IAM 2>&1)
+            STATUS=$?
+            set -e  # Re-enable exit on error
+
+            if [ $STATUS -ne 0 ]; then
+              echo "$UPDATE_OUTPUT"
+              if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
+                echo "No updates are to be performed. Continuing..."
+              else
+                exit $STATUS
+              fi
+            fi
+            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
@@ -113,6 +142,7 @@ jobs:
               --tags "$TAGS" \
               --parameters $PARAMETERS \
               --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name $STACK_NAME
           fi
 
       - name: Build, tag, and push frontend image to Amazon ECR
