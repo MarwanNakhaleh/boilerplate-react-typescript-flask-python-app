@@ -4,12 +4,22 @@ from flask import jsonify, request
 from flask.blueprints import Blueprint
 from flask_cors import cross_origin
 
-from .constants import listings_args_list, contacts_args_list, listings_endpoint, contacts_endpoint, transactions_args_list, transactions_endpoint
+from .constants import (
+    listings_args_list, 
+    contacts_args_list, 
+    listings_endpoint, 
+    contacts_endpoint, 
+    transactions_args_list, 
+    transactions_endpoint,
+    bar_graph_endpoint,
+    bar_graph_args_list
+)
 from .data import get_data
 
 listings = Blueprint('listings', __name__)
 contacts = Blueprint('contacts', __name__)
 transactions = Blueprint('transactions', __name__)
+bar_graph = Blueprint('bar_graph', __name__)
 
 @contacts.route(contacts_endpoint, methods=["GET"])
 @cross_origin(headers=['Content-Type'])
@@ -74,6 +84,25 @@ def get_listings():
             "error": "invalid arguments entered"
         }
         resp = api_response(results, listings_endpoint, None, None, 400)
+    return resp
+
+@bar_graph.route(bar_graph_endpoint, methods=["GET"])
+@cross_origin(headers=['Content-Type'])
+def get_bar_graph():
+    args = {}
+    try:
+        for key in bar_graph_args_list:
+            args[key] = request.args.get(key)
+
+        bar_graph = get_data("api/mockdata/bar_graph.json")
+        results = json_response(args, bar_graph_endpoint, bar_graph)
+        resp = api_response(results, bar_graph_endpoint, args["start"], args["limit"])
+    except Exception as e:
+        print(e)
+        results = {
+            "error": "invalid arguments entered"
+        }
+        resp = api_response(results, bar_graph_endpoint, None, None, 400)
     return resp
 
 @listings.route('/', methods=["GET"])

@@ -27,6 +27,7 @@ const Dashboard = () => {
             method: "GET",
         })
             .then((data) => setTransactions(data.results as Transaction[]))
+            .catch((error) => console.error(error));
     }, []);
 
     return (

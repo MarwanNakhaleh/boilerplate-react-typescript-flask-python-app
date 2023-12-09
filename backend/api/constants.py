@@ -26,6 +26,12 @@ transactions_args_list = [
     "limit",
 ]
 
+bar_graph_args_list = [
+    "start",
+    "limit",
+]
+
 listings_endpoint = "/listings"
 contacts_endpoint = "/contacts"
 transactions_endpoint = "/transactions"
+bar_graph_endpoint = "/bar_graph"

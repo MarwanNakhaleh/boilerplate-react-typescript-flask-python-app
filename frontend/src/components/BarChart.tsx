@@ -1,15 +1,27 @@
+import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
+import { BarGraphData } from "../types/BarGraphData";
+import { ApiResponse } from "../types/ApiResponse";
+import { sendRequest } from "../helpers/request";
 
 const BarChart = ({ isDashboard = false }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [barGraphData, setBarGraphData] = useState<BarGraphData[]>([]);
+
+    useEffect(() => {
+        sendRequest(`${process.env.API_URL}/api/v1/bar_graph`, {
+            method: "GET",
+        })
+            .then((data: ApiResponse) => setBarGraphData(data.results as BarGraphData[]))
+            .catch((error) => console.error(error));
+    }, []);
 
     return (
         <ResponsiveBar
-            data={data}
+            data={barGraphData}
             theme={{
                 // added
                 axis: {
@@ -39,7 +51,7 @@ const BarChart = ({ isDashboard = false }) => {
                     },
                 },
             }}
-            keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
+            keys={["hotdog", "burger", "sandwich", "kebab", "fries", "donut"]}
             indexBy="country"
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}

@@ -18,6 +18,8 @@ const Contacts = () => {
             method: "GET",
         })
             .then((data) => setContacts(data.results as Contact[]))
+            .catch((error) => console.error(error));
+
     }, []);
 
     const columns: GridColDef[] = [
