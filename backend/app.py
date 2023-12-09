@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
 
+from api.constants import api_prefix
+
 from api.endpoints import (
     listings, 
     contacts, 
     transactions,
-    bar_graph
+    bar_graph,
+    team,
+    geography
 )
 
 def create_app():
@@ -13,10 +17,12 @@ def create_app():
     app.config['DEBUG'] = True
     app.config['CORS_HEADERS'] = 'Content-Type'
     cors = CORS(app, resources={r"/*": {"origins": ["localhost", "http://localhost:3000"]}})
-    app.register_blueprint(listings, url_prefix='/api/v1')
-    app.register_blueprint(contacts, url_prefix='/api/v1')
-    app.register_blueprint(transactions, url_prefix='/api/v1')
-    app.register_blueprint(bar_graph, url_prefix='/api/v1')
+    app.register_blueprint(listings, url_prefix=api_prefix)
+    app.register_blueprint(contacts, url_prefix=api_prefix)
+    app.register_blueprint(transactions, url_prefix=api_prefix)
+    app.register_blueprint(bar_graph, url_prefix=api_prefix)
+    app.register_blueprint(team, url_prefix=api_prefix)
+    app.register_blueprint(geography, url_prefix=api_prefix)
 
     return app
         

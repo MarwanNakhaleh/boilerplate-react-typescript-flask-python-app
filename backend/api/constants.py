@@ -2,6 +2,8 @@ import os
 import sys
 sys.path.insert(0, os.getcwd())
 
+api_prefix = '/api/v1'
+
 listings_args_list = [
     "min_bedrooms",
     "max_bedrooms",
@@ -31,7 +33,19 @@ bar_graph_args_list = [
     "limit",
 ]
 
+team_args_list = [
+    "start",
+    "limit",
+]
+
+geography_args_list = [
+    "start",
+    "limit",
+]
+
 listings_endpoint = "/listings"
 contacts_endpoint = "/contacts"
 transactions_endpoint = "/transactions"
 bar_graph_endpoint = "/bar_graph"
+team_endpoint = "/team"
+geography_endpoint = "/geography"

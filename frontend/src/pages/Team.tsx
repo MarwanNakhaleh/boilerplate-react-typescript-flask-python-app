@@ -1,15 +1,29 @@
+import { useState, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import { tokens } from "../theme";
-import { mockDataTeam } from "../data/mockData";
 import Header from "../components/Header";
 import { AccessType } from "../types/Access";
+import { TeamMember } from "../types/TeamMember";
+import { sendRequest } from "../helpers/request";
 
 const Team = () => {
+    const [teamData, setTeamData] = useState<TeamMember[]>([]);
     const theme = useTheme();
+
+    useEffect(() => {
+        sendRequest(`${process.env.API_URL}/api/v1/team`, {
+            method: "GET",
+        })
+            .then((data) => {
+                setTeamData(data.results as TeamMember[]);
+            })
+            .catch((error) => console.error(error));
+    }, []);
+
     const colors = tokens(theme.palette.mode);
     const columns = [
         { field: "id", headerName: "ID" },
@@ -107,7 +121,7 @@ const Team = () => {
                 }}
                     pageSizeOptions={[5]}
                     checkboxSelection
-                    rows={mockDataTeam} columns={columns} />
+                    rows={teamData} columns={columns} />
             </Box>
         </Box>
     );

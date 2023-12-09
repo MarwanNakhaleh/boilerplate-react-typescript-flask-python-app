@@ -12,7 +12,11 @@ from .constants import (
     transactions_args_list, 
     transactions_endpoint,
     bar_graph_endpoint,
-    bar_graph_args_list
+    bar_graph_args_list,
+    team_endpoint,
+    team_args_list,
+    geography_endpoint,
+    geography_args_list
 )
 from .data import get_data
 
@@ -20,6 +24,8 @@ listings = Blueprint('listings', __name__)
 contacts = Blueprint('contacts', __name__)
 transactions = Blueprint('transactions', __name__)
 bar_graph = Blueprint('bar_graph', __name__)
+team = Blueprint('team', __name__)
+geography = Blueprint('geography', __name__)
 
 @contacts.route(contacts_endpoint, methods=["GET"])
 @cross_origin(headers=['Content-Type'])
@@ -104,6 +110,45 @@ def get_bar_graph():
         }
         resp = api_response(results, bar_graph_endpoint, None, None, 400)
     return resp
+
+@geography.route(geography_endpoint, methods=["GET"])
+@cross_origin(headers=['Content-Type'])
+def get_geography():
+    args = {}
+    try:
+        for key in geography_args_list:
+            args[key] = request.args.get(key)
+
+        geography = get_data("api/mockdata/geography.json")
+        results = json_response(args, geography_endpoint, geography)
+        resp = api_response(results, geography_endpoint, args["start"], args["limit"])
+    except Exception as e:
+        print(e)
+        results = {
+            "error": "invalid arguments entered"
+        }
+        resp = api_response(results, geography_endpoint, None, None, 400)
+    return resp
+
+@team.route(team_endpoint, methods=["GET"])
+@cross_origin(headers=['Content-Type'])
+def get_team():
+    args = {}
+    try:
+        for key in team_args_list:
+            args[key] = request.args.get(key)
+
+        team = get_data("api/mockdata/team.json")
+        results = json_response(args, team_endpoint, team)
+        resp = api_response(results, team_endpoint, args["start"], args["limit"])
+    except Exception as e:
+        print(e)
+        results = {
+            "error": "invalid arguments entered"
+        }
+        resp = api_response(results, team_endpoint, None, None, 400)
+    return resp
+
 
 @listings.route('/', methods=["GET"])
 def get():

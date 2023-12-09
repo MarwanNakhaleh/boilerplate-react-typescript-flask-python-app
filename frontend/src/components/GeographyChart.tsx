@@ -1,12 +1,26 @@
+import { useState, useEffect } from "react";
 import { useTheme } from "@mui/material";
 import { ResponsiveChoropleth } from "@nivo/geo";
 import { geoFeatures } from "../data/mockGeoFeatures";
 import { tokens } from "../theme";
-import { mockGeographyData as data } from "../data/mockData";
+import { Geography } from "../types/Geography";
+import { sendRequest } from "../helpers/request";
 
 const GeographyChart = ({ isDashboard = false }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const [data, setData] = useState<Geography[]>([]);
+    useEffect(() => {
+        sendRequest(`${process.env.API_URL}/api/v1/geography`, {
+            method: "GET",
+        })
+            .then((data) => {
+                setData(data.results as Geography[]);
+            })
+            .catch((error) => console.error(error));
+    }, []);
+
     return (
         <ResponsiveChoropleth
             data={data}
