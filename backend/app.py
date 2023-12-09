@@ -9,7 +9,8 @@ from api.endpoints import (
     transactions,
     bar_graph,
     team,
-    geography
+    geography,
+    healthcheck
 )
 
 def create_app():
@@ -17,6 +18,7 @@ def create_app():
     app.config['DEBUG'] = True
     app.config['CORS_HEADERS'] = 'Content-Type'
     cors = CORS(app, resources={r"/*": {"origins": origins}})
+    app.register_blueprint(healthcheck, url_prefix='')
     app.register_blueprint(listings, url_prefix=api_prefix)
     app.register_blueprint(contacts, url_prefix=api_prefix)
     app.register_blueprint(transactions, url_prefix=api_prefix)

@@ -20,6 +20,8 @@ from .constants import (
 )
 from .data import get_data
 
+healthcheck = Blueprint('healthcheck', __name__)
+
 listings = Blueprint('listings', __name__)
 contacts = Blueprint('contacts', __name__)
 transactions = Blueprint('transactions', __name__)
@@ -39,9 +41,8 @@ def get_contacts():
         results = json_response(args, contacts_endpoint, contacts)
         resp = api_response(results, contacts_endpoint, args["start"], args["limit"])
     except Exception as e:
-        print(e)
         results = {
-            "error": "invalid arguments entered"
+            "error": str(e)
         }
         resp = api_response(results, contacts_endpoint, None, None, 400)
     return resp
@@ -58,9 +59,8 @@ def get_transactions():
         results = json_response(args, transactions_endpoint, transactions)
         resp = api_response(results, transactions_endpoint, args["start"], args["limit"])
     except Exception as e:
-        print(e)
         results = {
-            "error": "invalid arguments entered"
+            "error": str(e)
         }
         resp = api_response(results, transactions_endpoint, None, None, 400)
     return resp
@@ -85,9 +85,8 @@ def get_listings():
         ])
         resp = api_response(results, listings_endpoint, args["start"], args["limit"])
     except Exception as e:
-        print(e)
         results = {
-            "error": "invalid arguments entered"
+            "error": str(e)
         }
         resp = api_response(results, listings_endpoint, None, None, 400)
     return resp
@@ -104,9 +103,8 @@ def get_bar_graph():
         results = json_response(args, bar_graph_endpoint, bar_graph)
         resp = api_response(results, bar_graph_endpoint, args["start"], args["limit"])
     except Exception as e:
-        print(e)
         results = {
-            "error": "invalid arguments entered"
+            "error": str(e)
         }
         resp = api_response(results, bar_graph_endpoint, None, None, 400)
     return resp
@@ -123,9 +121,8 @@ def get_geography():
         results = json_response(args, geography_endpoint, geography)
         resp = api_response(results, geography_endpoint, args["start"], args["limit"])
     except Exception as e:
-        print(e)
         results = {
-            "error": "invalid arguments entered"
+            "error": str(e)
         }
         resp = api_response(results, geography_endpoint, None, None, 400)
     return resp
@@ -150,7 +147,7 @@ def get_team():
     return resp
 
 
-@listings.route('/', methods=["GET"])
+@healthcheck.route('/', methods=["GET"])
 def get():
     return jsonify(
         {
