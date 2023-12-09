@@ -103,16 +103,16 @@ jobs:
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
               --tags "$TAGS" \
-              --parameters $PARAMETERS
-              --capabilities CAPABILITY_IAM
+              --parameters $PARAMETERS \
+              --capabilities CAPABILITY_NAMED_IAM
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
               --tags "$TAGS" \
-              --parameters $PARAMETERS
-              --capabilities CAPABILITY_IAM
+              --parameters $PARAMETERS \
+              --capabilities CAPABILITY_NAMED_IAM
           fi
 
       - name: Build, tag, and push frontend image to Amazon ECR
