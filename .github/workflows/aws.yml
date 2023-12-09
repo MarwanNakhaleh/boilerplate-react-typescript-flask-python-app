@@ -1,29 +1,3 @@
-# This workflow will build and push a new container image to Amazon ECR,
-# and then will deploy a new task definition to Amazon ECS, when there is a push to the "master" branch.
-#
-# To use this workflow, you will need to complete the following set-up steps:
-#
-# 1. Create an ECR repository to store your images.
-#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-2`.
-#    Replace the values of the `BACKEND_ECR_REPOSITORY` and `FRONTEND_ECR_REPOSITORY` environment variable in the workflow below with your repository's name.
-#    Replace the value of the `AWS_REGION` environment variable in the workflow below with your repository's region.
-#
-# 2. Create an ECS task definition, an ECS cluster, and an ECS service.
-#    For example, follow the Getting Started guide on the ECS console:
-#      https://us-east-2.console.aws.amazon.com/ecs/home?region=us-east-2#/firstRun
-#    Replace the value of the `BACKEND_ECS_SERVICE` environment variable in the workflow below with the name you set for the Amazon ECS service.
-#    Replace the value of the `BACKEND_ECS_CLUSTER` environment variable in the workflow below with the name you set for the cluster.
-#
-# 3. Store your ECS task definition as a JSON file in your repository.
-#    The format should follow the output of `aws ecs register-task-definition --generate-cli-skeleton`.
-#    Replace the value of the `BACKEND_ECS_TASK_DEFINITION` environment variable in the workflow below with the path to the JSON file.
-#    Replace the value of the `BACKEND_CONTAINER_NAME` environment variable in the workflow below with the name of the container
-#    in the `containerDefinitions` section of the task definition.
-#
-# 4. Store an IAM user access key in GitHub Actions secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-#    See the documentation for each action used below for the recommended IAM policies for this IAM user,
-#    and best practices on handling the access key credentials.
-
 name: Deploy to Amazon ECS
 
 on:
@@ -32,24 +6,12 @@ on:
 
 env:
   AWS_REGION: us-east-1 # set this to your preferred AWS region, e.g. us-west-1
-  BACKEND_ECR_REPOSITORY: MY_BACKEND_ECR_REPOSITORY # set this to your Amazon ECR repository name
-  BACKEND_ECS_SERVICE: MY_BACKEND_ECS_SERVICE # set this to your Amazon ECS service name
-  BACKEND_ECS_CLUSTER: MY_BACKEND_ECS_CLUSTER # set this to your Amazon ECS cluster name
-  BACKEND_ECS_TASK_DEFINITION:
-    MY_BACKEND_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-    # file, e.g. .aws/task-definition.json
-  BACKEND_CONTAINER_NAME:
-    MY_BACKEND_CONTAINER_NAME # set this to the name of the container in the
-    # containerDefinitions section of your task definition
-  FRONTEND_ECR_REPOSITORY: MY_FRONTEND_ECR_REPOSITORY # set this to your Amazon ECR repository name
-  FRONTEND_ECS_SERVICE: MY_FRONTEND_ECS_SERVICE # set this to your Amazon ECS service name
-  FRONTEND_ECS_CLUSTER: MY_FRONTEND_ECS_CLUSTER # set this to your Amazon ECS cluster name
-  FRONTEND_ECS_TASK_DEFINITION:
-    MY_FRONTEND_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-    # file, e.g. .aws/task-definition.json
-  FRONTEND_CONTAINER_NAME:
-    MY_FRONTEND_CONTAINER_NAME # set this to the name of the container in the
-    # containerDefinitions section of your task definition
+  AUTHOR_NAME: ${{ github.actor }}
+  CERTIFICATE_DOMAIN_NAME: "*.branson.solutions"
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: full-stack-repository # set this to your Amazon ECR repository name
+  BACKEND_IMAGE_TAG: full-stack-backend
+  FRONTEND_IMAGE_TAG: full-stack-frontend
 
 permissions:
   contents: read
@@ -71,66 +33,80 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Create or Update ECR Repository Stack
+        run: |
+          STACK_NAME=ECRRepository
+          TEMPLATE_BODY=file://ecr_repository_and_network_resources.yaml
+          TAGS="[{\"Key\": \"Author\", \"Value\": \"${{ env.AUTHOR_NAME }}\"}, {\"Key\": \"Project\", \"Value\": \"Boilerplate Full-Stack App\"}]"
+          PARAMETERS='ParameterKey=RepositoryName,ParameterValue=full-stack-repository'
+
+          if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
+            echo "Stack exists, updating..."
+            aws cloudformation update-stack \
+              --stack-name $STACK_NAME \
+              --template-body $TEMPLATE_BODY \
+              --tags $TAGS \
+              --parameters $PARAMETERS
+          else
+            echo "Stack does not exist, creating..."
+            aws cloudformation create-stack \
+              --stack-name $STACK_NAME \
+              --template-body $TEMPLATE_BODY \
+              --tags $TAGS \
+              --parameters $PARAMETERS
+          fi
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push backend image to Amazon ECR
-        id: build-image
-        env:
-          BACKEND_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+        id: build-backend-image
         run: |
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
           cd backend
-          docker build -t $BACKEND_ECR_REGISTRY/$BACKEND_ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $BACKEND_ECR_REGISTRY/$BACKEND_ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$BACKEND_ECR_REGISTRY/$BACKEND_ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$BACKEND_IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$BACKEND_IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$BACKEND_IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Fill in the new backend image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.BACKEND_ECS_TASK_DEFINITION }}
-          container-name: ${{ env.BACKEND_CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
+      - name: Create ACM certificate
+        id: create-acm-certificate
+        run: |
+          CERTIFICATE_ARN=$(aws acm request-certificate --domain-name "$CERTIFICATE_DOMAIN_NAME" --validation-method DNS --query 'CertificateArn' --output text)
+          echo "certificate_arn=$CERTIFICATE_ARN" >> $GITHUB_OUTPUT
 
-      - name: Deploy backend Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.BACKEND_ECS_SERVICE }}
-          cluster: ${{ env.BACKEND_ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: Create or Update Back End Stack
+        run: |
+          STACK_NAME=ECSClusterBackEnd
+          TEMPLATE_BODY=file://backend/template.yaml
+          TAGS="[{\"Key\": \"Author\", \"Value\": \"${{ env.AUTHOR_NAME }}\"}, {\"Key\": \"Project\", \"Value\": \"Boilerplate Full-Stack App\"}]"
+          PARAMETERS="ParameterKey=DockerImage,ParameterValue={{ steps.build-backend-image.outputs.image }} ParameterKey=CertificateImport,ParameterValue={{ steps.create-acm-certificate.outputs.certificate_arn }}"
+
+          if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
+            echo "Stack exists, updating..."
+            aws cloudformation update-stack \
+              --stack-name $STACK_NAME \
+              --template-body $TEMPLATE_BODY \
+              --tags $TAGS \
+              --parameters $PARAMETERS
+          else
+            echo "Stack does not exist, creating..."
+            aws cloudformation create-stack \
+              --stack-name $STACK_NAME \
+              --template-body $TEMPLATE_BODY \
+              --tags $TAGS \
+              --parameters $PARAMETERS
+          fi
 
       - name: Build, tag, and push frontend image to Amazon ECR
-        id: build-image
-        env:
-          FRONTEND_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+        id: build-frontend-image
         run: |
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          cd backend
-          docker build -t $FRONTEND_ECR_REGISTRY/$FRONTEND_ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $FRONTEND_ECR_REGISTRY/$FRONTEND_ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$FRONTEND_ECR_REGISTRY/$FRONTEND_ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Fill in the new frontend image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.FRONTEND_ECS_TASK_DEFINITION }}
-          container-name: ${{ env.FRONTEND_CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy frontend Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.FRONTEND_ECS_SERVICE }}
-          cluster: ${{ env.FRONTEND_ECS_CLUSTER }}
-          wait-for-service-stability: true
+          cd frontend
+          docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG" >> $GITHUB_OUTPUT

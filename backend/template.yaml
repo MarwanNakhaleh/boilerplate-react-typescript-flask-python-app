@@ -218,3 +218,10 @@ Resources:
       Description: deployment of courses endpoints
       ApiId: !Ref HttpApi
       StageName: !Ref ApiDeployStageName
+
+Outputs:
+  LoadBalancerUrl:
+    Description: URL for the load balancer
+    Value: !GetAtt LoadBalancer.DNSName
+    Export:
+      Name: LoadBalancerUrl
