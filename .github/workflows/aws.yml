@@ -102,14 +102,14 @@ jobs:
             aws cloudformation update-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
-              --tags $TAGS \
+              --tags "$TAGS" \
               --parameters $PARAMETERS
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
               --stack-name $STACK_NAME \
               --template-body $TEMPLATE_BODY \
-              --tags $TAGS \
+              --tags "$TAGS" \
               --parameters $PARAMETERS
           fi
 
