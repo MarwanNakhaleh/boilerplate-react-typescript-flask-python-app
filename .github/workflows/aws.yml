@@ -168,3 +168,42 @@ jobs:
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Create or Update Front End Stack
+        run: |
+          STACK_NAME=ECSClusterFrontEnd
+          TEMPLATE_BODY=file://frontend/template.yaml
+          TAGS="[{\"Key\": \"Author\", \"Value\": \"$AUTHOR_NAME\"}, {\"Key\": \"Project\", \"Value\": \"Boilerplate Full-Stack App\"}]"
+          PARAMETERS="ParameterKey=DockerImage,ParameterValue=${{ steps.build-frontend-image.outputs.image }} ParameterKey=CertificateImport,ParameterValue=${{ steps.create-acm-certificate.outputs.certificate_arn }}"
+
+          if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
+            echo "Stack exists, updating..."
+            set +e  # Disable exit on error
+            UPDATE_OUTPUT=$(aws cloudformation update-stack \
+              --stack-name $STACK_NAME \
+              --template-body $TEMPLATE_BODY \
+              --tags "$TAGS" \
+              --parameters $PARAMETERS \
+              --capabilities CAPABILITY_NAMED_IAM 2>&1)
+            STATUS=$?
+            set -e  # Re-enable exit on error
+
+            if [ $STATUS -ne 0 ]; then
+              echo "$UPDATE_OUTPUT"
+              if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
+                echo "No updates are to be performed. Continuing..."
+              else
+                exit $STATUS
+              fi
+            fi
+            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
+          else
+            echo "Stack does not exist, creating..."
+            aws cloudformation create-stack \
+              --stack-name $STACK_NAME \
+              --template-body $TEMPLATE_BODY \
+              --tags "$TAGS" \
+              --parameters $PARAMETERS \
+              --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name $STACK_NAME
+          fi
