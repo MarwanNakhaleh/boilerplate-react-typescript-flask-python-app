@@ -8,6 +8,7 @@ env:
   AWS_REGION: us-east-1 # set this to your preferred AWS region, e.g. us-west-1
   AUTHOR_NAME: ${{ github.actor }}
   CERTIFICATE_DOMAIN_NAME: "*.branson.solutions"
+  DNS_NAME: "branson.solutions"
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: full-stack-repository # set this to your Amazon ECR repository name
   BACKEND_IMAGE_TAG: full-stack-backend
@@ -32,6 +33,15 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get Route53 HostedZone ID
+        id: get-hostedzone-id
+        run: |
+          DNS_NAME=$DNS_NAME
+          HOSTED_ZONE_JSON=$(aws route53 list-hosted-zones-by-name --output json)
+          HOSTED_ZONE_ID=$(echo $HOSTED_ZONE_JSON | jq --arg name "branson.solutions." -r '.HostedZones | .[] | select(.Name=="\($name)") | .Id' | sed 's|/hostedzone/||')
+          echo "HostedZone ID: $HOSTED_ZONE_ID"
+          echo "hosted_zone_id=$HOSTED_ZONE_ID" >> $GITHUB_OUTPUT
 
       - name: Create or Update ECR Repository Stack
         run: |
@@ -111,7 +121,7 @@ jobs:
           STACK_NAME=ECSClusterBackEnd
           TEMPLATE_BODY=file://backend/template.yaml
           TAGS="[{\"Key\": \"Author\", \"Value\": \"$AUTHOR_NAME\"}, {\"Key\": \"Project\", \"Value\": \"Boilerplate Full-Stack App\"}]"
-          PARAMETERS="ParameterKey=DockerImage,ParameterValue=${{ steps.build-backend-image.outputs.image }} ParameterKey=CertificateImport,ParameterValue=${{ steps.create-acm-certificate.outputs.certificate_arn }}"
+          PARAMETERS="ParameterKey=DockerImage,ParameterValue=${{ steps.build-backend-image.outputs.image }} ParameterKey=CertificateImport,ParameterValue=${{ steps.create-acm-certificate.outputs.certificate_arn }} ParameterKey=HostedZoneId,ParameterValue=${{ steps.get-hostedzone-id.outputs.hosted_zone_id }}"
 
           if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
             echo "Stack exists, updating..."

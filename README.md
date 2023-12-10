@@ -36,6 +36,7 @@ python app.py
 You must have the following to execute this full-stack deploy.
 
 * an AWS account along with a programmatic access key configured on your computer
+* a domain name in AWS with a Route 53 hosted zone
 * AWS CLI V2 installed on your computer
 * Docker Desktop installed on your computer
 
