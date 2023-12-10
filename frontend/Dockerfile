@@ -14,9 +14,14 @@ RUN CI=true yarn install
 
 COPY . ./
 
-# Set the environment variable
+# Define the arguments
+ARG API_URL
+ARG REACT_APP_GOOGLE_CLIENT_ID
+
+# Set the environment variables
 ENV YARN_ENABLE_IMMUTABLE_INSTALLS=false
-ENV API_URL=https://api.branson.solutions
+ENV API_URL=${API_URL}
+ENV REACT_APP_GOOGLE_CLIENT_ID=${REACT_APP_GOOGLE_CLIENT_ID}
 
 RUN yarn build
 
