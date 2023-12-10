@@ -43,11 +43,24 @@ You must have the following to execute this full-stack deploy.
 This app also utilizes Google Authentication, so you will need a Google Cloud account with a valid credit card on your billing account. I'll describe that setup in more detail later.
 
 ### Initial setup
-Run the following command in the root directory of this repo:
+Run the following command in the root directory of this repo after cloning it:
 ```bash
 git config --local core.hooksPath .githooks/
 ```
 
+### Setting up HTTPS
+The Github Actions script handles requesting an SSL certificate or using an existing suitable one, so the only things you will need before attempting to deploy this application is a registered domain name and an existing hosted zone. 
+
+### Modifying forked/cloned/copied repo setup
+To execute the Github Actions script if you're re-creating this in a new repo you own, you will need to add the following secrets to the Environments section in settings:
+* AWS_ACCESS_KEY_ID
+* AWS_ACCOUNT_ID
+* AWS_SECRET_ACCESS_KEY
+* REACT_APP_GOOGLE_CLIENT_ID
+
+You will also want to add `API_URL` in your environment (not secret) variables. Set its value as the FQDN you want for your API. This should be a subdomain of your main domain name. For example, I've been using "boilerplate-api.branson.solutions" for my API as a subdomain of "branson.solutions".
+
+## Local setup
 ### Creating an ECR repository
 You can execute the CFT in the root directory "ecr_repository_and_network_resources.yaml".
 
@@ -78,14 +91,17 @@ docker push AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full
 docker push AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/REPOSITORY_NAME:full-stack-frontend
 ```
 
-### Setting up HTTPS
-You need an existing domain name. I had to create an A record pointing from a subdomain of my URL I've been using (in this case https://branson.solutions) called `boilerplate.branson.solutions`. I also had to issue a certificate in [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) covering `*.branson.solutions` and then update the CFT to use that certificate, since my old certificate was only valid on `branson.solutions`, not `*.branson.solutions`.
-
-### Modifying Github Actions
-There's an environment section. You will need to modify this. I'll write more about this when I actually get around to fleshing out this step.
-
 ## Stuff I've learned from building this thing
-I had minimal experience with Docker prior to building this application. I kinda wanted to do something that was not AWS Lambda flavor of serverless. I love Lambda, but I need to spread my wings and work with more flexible serverless technologies. Here is a list of important lessons I learned from putting this together, in no particular order:
+These are some tools with which I've had minimal experience but learned more about during this project:
+* Docker
+* AWS ECS/Fargate
+* Github Actions
+* MaterialUI for React
+* Webpack
 
-* ChatGPT is a fucking godsend. I've worked with folks who swear against it with statements like "it's just a smart web crawler" or "anything it can figure I can figure out". While both of those statements are somewhat true, to that mindset I say "it's a tool to solve your problems. Use it and solve problems better and faster than before." 
-* Alpine Linux images with code runtime environments can be finicky for nontrivial projects. I was struggling for a while with a Node 18 Alpine Docker image in my frontend Dockerfile. It was never finishing "yarn build" even when left overnight. However, when I switched that to the Node LTS Docker image, "yarn build" finished rather quickly, and then I could still use an Alpine Nginx Docker image to actually serve the built application files.
+Here is a list of important lessons I learned from putting this together, in no particular order:
+
+* ChatGPT is a fucking godsend. I've worked with folks who swear against it with statements like "it's just a smart web crawler" or "anything it can figure I can figure out". While both of those are somewhat true, I say to that mindset "it's a tool to solve your problems. Use it and solve problems better and faster than before." 
+* Alpine Linux images with code runtime environments might need extra configuration for nontrivial projects. I was struggling for a while with a Node 18 Alpine Docker image in my frontend Dockerfile. It was never finishing "yarn build" even when left overnight. However, when I switched that to the Node LTS Docker image, "yarn build" finished rather quickly, and then I could still use an Alpine Nginx Docker image to actually serve the built application files.
+* Creating and attaching certificates and DNS records has become easier in the past few years, with only part of that change due to generative AI.
+* Github Actions is an perfectly fine CI/CD tool for what it is. It provides everything I need and nothing I don't need.
