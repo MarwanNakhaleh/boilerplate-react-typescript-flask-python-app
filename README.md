@@ -42,6 +42,12 @@ You must have the following to execute this full-stack deploy.
 
 This app also utilizes Google Authentication, so you will need a Google Cloud account with a valid credit card on your billing account. I'll describe that setup in more detail later.
 
+### Initial setup
+Run the following command in the root directory of this repo:
+```bash
+git config --local core.hooksPath .githooks/
+```
+
 ### Creating an ECR repository
 You can execute the CFT in the root directory "ecr_repository_and_network_resources.yaml".
 

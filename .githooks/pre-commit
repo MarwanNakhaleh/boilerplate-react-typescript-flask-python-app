@@ -1,0 +1,3 @@
+#!/bin/sh
+source backend/bin/activate
+python backend/test/test_api.py
