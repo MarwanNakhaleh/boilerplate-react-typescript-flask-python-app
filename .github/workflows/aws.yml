@@ -143,7 +143,6 @@ jobs:
                 exit $STATUS
               fi
             fi
-            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
