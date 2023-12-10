@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from flask import make_response
 
 from app import create_app
-from api.constants import args_list
+from api.constants import listings_args_list
 
 class TestApp(unittest.TestCase):
     def setUp(self) -> None:
@@ -19,14 +19,14 @@ class TestApp(unittest.TestCase):
         self.app = None
     
     def test_correct_results_from_base_endpoint(self):
-        response = make_response(self.app.test_client().get('/listings')).data
+        response = make_response(self.app.test_client().get('/api/v1/listings')).data
         json_response = json.loads(response)
         
         num_results = json_response["num_results"]
         self.assertEqual(1, num_results)
         
         query = json_response["metadata"]["query"]
-        for arg in args_list:
+        for arg in listings_args_list:
             self.assertEqual(None, query[arg])
             
         data = json_response["results"][0]
