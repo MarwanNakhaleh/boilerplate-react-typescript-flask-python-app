@@ -121,7 +121,7 @@ jobs:
           STACK_NAME=ECSClusterBackEnd
           TEMPLATE_BODY=file://backend/template.yaml
           TAGS="[{\"Key\": \"Author\", \"Value\": \"$AUTHOR_NAME\"}, {\"Key\": \"Project\", \"Value\": \"Boilerplate Full-Stack App\"}]"
-          PARAMETERS="ParameterKey=DockerImage,ParameterValue=${{ steps.build-backend-image.outputs.image }} ParameterKey=CertificateImport,ParameterValue=${{ steps.create-acm-certificate.outputs.certificate_arn }} ParameterKey=HostedZoneId,ParameterValue=${{ steps.get-hostedzone-id.outputs.hosted_zone_id }}"
+          PARAMETERS="ParameterKey=DockerImage,ParameterValue=${{ steps.build-backend-image.outputs.image }} ParameterKey=CertificateImport,ParameterValue=${{ steps.create-acm-certificate.outputs.certificate_arn }} ParameterKey=HostedZoneId,ParameterValue=${{ steps.get-hostedzone-id.outputs.hosted_zone_id }} ParameterKey=DomainName,ParameterValue=$DNS_NAME"
 
           if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
             echo "Stack exists, updating..."
