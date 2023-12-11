@@ -161,7 +161,7 @@ jobs:
           # push it to ECR so that it can
           # be deployed to ECS.
           cd frontend
-          docker build --platform linux/amd64 \
+          docker build --no-cache --platform linux/amd64 \
             --build-arg API_URL=${{ env.API_URL }} \
             --build-arg REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }} \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$FRONTEND_IMAGE_TAG .
