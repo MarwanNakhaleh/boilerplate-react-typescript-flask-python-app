@@ -143,8 +143,8 @@ Resources:
     Properties:
       HostedZoneId: !Ref HostedZoneId
       Name: !Sub boilerplate-ui.${DomainName}
-      Type: "A"
+      Type: A
       AliasTarget:
-        DNSName: !Sub dualstack.${LoadBalancer.DNSName}
+        DNSName: !GetAtt LoadBalancer.DNSName
         HostedZoneId: "Z35SXDOTRQ7X7K" # comes from https://docs.aws.amazon.com/general/latest/gr/elb.html for us-east-1
         EvaluateTargetHealth: false
