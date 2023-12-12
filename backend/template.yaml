@@ -104,7 +104,7 @@ Resources:
       VpcId: !ImportValue FullStackVpcId
       TargetType: ip
       HealthCheckEnabled: true
-      HealthCheckIntervalSeconds: 3600
+      HealthCheckIntervalSeconds: 300
       HealthCheckPath: /
       HealthCheckPort: 8000
       HealthCheckProtocol: HTTP
