@@ -94,12 +94,12 @@ Resources:
       VpcId: !ImportValue FullStackVpcId
       TargetType: ip
       HealthCheckEnabled: true
-      HealthCheckIntervalSeconds: 30
+      HealthCheckIntervalSeconds: 3600
       HealthCheckPath: /
       HealthCheckPort: 80
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 15
-      HealthyThresholdCount: 3
+      HealthyThresholdCount: 2
       UnhealthyThresholdCount: 2
 
   Listener:
@@ -120,7 +120,7 @@ Resources:
     DependsOn: LogGroup
     Properties:
       Family: react-app
-      Cpu: 256
+      Cpu: 512
       Memory: 512
       NetworkMode: awsvpc
       RequiresCompatibilities:

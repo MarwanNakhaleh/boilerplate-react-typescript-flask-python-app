@@ -49,7 +49,7 @@ git config --local core.hooksPath .githooks/
 ```
 
 ### Setting up HTTPS
-The Github Actions script handles requesting an SSL certificate or using an existing suitable one, so the only things you will need before attempting to deploy this application is a registered domain name and an existing hosted zone. 
+The Github Actions script handles requesting an SSL certificate or using an existing suitable one, so the only domain-related things you will need before attempting to deploy this application is a registered domain name and an existing hosted zone for it in AWS. 
 
 ### Modifying forked/cloned/copied repo setup
 To execute the Github Actions script if you're re-creating this in a new repo you own, you will need to add the following secrets to the Environments section in settings:
@@ -57,6 +57,10 @@ To execute the Github Actions script if you're re-creating this in a new repo yo
 * AWS_ACCOUNT_ID
 * AWS_SECRET_ACCESS_KEY
 * REACT_APP_GOOGLE_CLIENT_ID
+
+It'll look something like this in your settings:
+
+![](./github_secrets.png)
 
 You will also want to add `API_URL` in your environment (not secret) variables. Set its value as the FQDN you want for your API. This should be a subdomain of your main domain name. For example, I've been using "boilerplate-api.branson.solutions" for my API as a subdomain of "branson.solutions".
 
