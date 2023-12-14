@@ -76,7 +76,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: /ecs/fullstack/backend
+      LogGroupName: /ecs/fullstack/backend/server
       RetentionInDays: 60
 
   # Log group to log API Gateway output to Cloudwatch
