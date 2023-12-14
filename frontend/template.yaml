@@ -114,6 +114,19 @@ Resources:
       Certificates:
         - CertificateArn: !Ref CertificateImport
 
+  HTTPRedirectListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Protocol: HTTPS
+            Port: 443
+            StatusCode: HTTP_301
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
   # Task Definition
   ECSTaskDefinition:
     Type: AWS::ECS::TaskDefinition

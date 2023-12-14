@@ -143,6 +143,7 @@ jobs:
                 echo "No updates are to be performed. Continuing..."
               else
                 exit $STATUS
+                aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
               fi
             fi
           else
@@ -195,6 +196,7 @@ jobs:
                 echo "No updates are to be performed. Continuing..."
               else
                 exit $STATUS
+                aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
               fi
             fi
           else
