@@ -63,14 +63,15 @@ jobs:
             set -e  # Re-enable exit on error
 
             if [ $STATUS -ne 0 ]; then
-              echo "$UPDATE_OUTPUT"
               if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
                 echo "No updates are to be performed. Continuing..."
               else
                 exit $STATUS
               fi
+            else
+              echo "Update initiated, waiting for completion..."
+              aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
             fi
-            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
           else
             echo "Stack does not exist, creating..."
             aws cloudformation create-stack \
@@ -78,7 +79,7 @@ jobs:
               --template-body $TEMPLATE_BODY \
               --tags "$TAGS" \
               --parameters $PARAMETERS
-            aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
+            aws cloudformation wait stack-create-complete --stack-name $STACK_NAME
           fi
 
       - name: Login to Amazon ECR
@@ -138,12 +139,14 @@ jobs:
             set -e  # Re-enable exit on error
 
             if [ $STATUS -ne 0 ]; then
-              echo "$UPDATE_OUTPUT"
               if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
                 echo "No updates are to be performed. Continuing..."
               else
-                aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
+                exit $STATUS
               fi
+            else
+              echo "Update initiated, waiting for completion..."
+              aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
             fi
           else
             echo "Stack does not exist, creating..."
@@ -190,12 +193,14 @@ jobs:
             set -e  # Re-enable exit on error
 
             if [ $STATUS -ne 0 ]; then
-              echo "$UPDATE_OUTPUT"
               if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
                 echo "No updates are to be performed. Continuing..."
               else
-                aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
+                exit $STATUS
               fi
+            else
+              echo "Update initiated, waiting for completion..."
+              aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
             fi
           else
             echo "Stack does not exist, creating..."
