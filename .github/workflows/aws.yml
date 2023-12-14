@@ -142,7 +142,6 @@ jobs:
               if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
                 echo "No updates are to be performed. Continuing..."
               else
-                exit $STATUS
                 aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
               fi
             fi
@@ -195,7 +194,6 @@ jobs:
               if [[ "$UPDATE_OUTPUT" == *"ValidationError"* && "$UPDATE_OUTPUT" == *"No updates are to be performed."* ]]; then
                 echo "No updates are to be performed. Continuing..."
               else
-                exit $STATUS
                 aws cloudformation wait stack-update-complete --stack-name $STACK_NAME
               fi
             fi
