@@ -35,6 +35,7 @@ python app.py
 ### Prerequisites
 You must have the following to execute this full-stack deploy.
 
+* A Google Cloud OAuth client in GCP [instructions here](./oauth-client-create.md)
 * an AWS account along with a programmatic access key configured on your computer
 * a domain name in AWS with a Route 53 hosted zone
 * AWS CLI V2 installed on your computer
@@ -42,7 +43,7 @@ You must have the following to execute this full-stack deploy.
 
 This app also utilizes Google Authentication, so you will need a Google Cloud account with a valid credit card on your billing account. I'll describe that setup in more detail later.
 
-### Initial setup
+### Initial local setup
 Run the following command in the root directory of this repo after cloning it:
 ```bash
 git config --local core.hooksPath .githooks/
