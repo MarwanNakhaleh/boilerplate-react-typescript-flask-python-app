@@ -27,6 +27,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up Node.js for Frontend Tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Frontend Dependencies and Run Tests
+        run: |
+          cd frontend
+          yarn install
+          yarn test --watchAll=false
+
+      # Add this step after the 'Install Frontend Dependencies and Run Tests' step
+      - name: Set up Python for API Tests
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8" # Specify your Python version here
+
+      - name: Install API Dependencies and Run Tests
+        run: |
+          python -m venv backend/venv
+          source backend/venv/bin/activate
+          pip install -r backend/requirements.txt
+          python backend/test/test_api.py
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
