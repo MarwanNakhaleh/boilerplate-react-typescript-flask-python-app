@@ -36,6 +36,7 @@ jobs:
         run: |
           corepack enable
           cd frontend
+          yarn config set -H enableImmutableInstalls false
           yarn install
           yarn test --watchAll=false
 
