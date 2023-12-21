@@ -37,6 +37,7 @@ jobs:
           npm install -g corepack
           corepack enable
           cd frontend
+          rm -f yarn.lock
           yarn install
           yarn test --watchAll=false
 
