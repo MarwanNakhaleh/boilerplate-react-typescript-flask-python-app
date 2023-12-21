@@ -34,6 +34,8 @@ jobs:
 
       - name: Install Frontend Dependencies and Run Tests
         run: |
+          npm install -g corepack
+          corepack enable
           cd frontend
           yarn install
           yarn test --watchAll=false
